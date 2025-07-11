@@ -1,8 +1,9 @@
 import { useState } from 'react'
-import TiltedCard from '../components/msacard';
-import logo from '../assets/msapng.png'
+import Footer1 from '../components/footer';
 import NavBar from '../components/navbar';
 import './App.css'
+import CurvedLoop from '../components/identity';
+import MsaCard from '../components/msacard';
 
 
 
@@ -12,27 +13,19 @@ function App() {
       <main className="min-h-screen">
        <NavBar/>
 
-       <div className=' flex justify-center-safe items-center mt-16'>
-         <TiltedCard
-          imageSrc={logo}
-          altText="msa logo"
-          captionText="Msa logo"
-          containerHeight="500px"
-          containerWidth="500px"
-          imageHeight="500px"
-          imageWidth="500px"
-          rotateAmplitude={18}
-          scaleOnHover={1.1}
-          showMobileWarning={false}
-          showTooltip={true}
-          displayOverlayContent={true}
-          overlayContent={
-            <p className="tilted-card-demo-text">
-            </p>
-          }
-               />
+      <MsaCard/>
+      
+       <div>
+        <CurvedLoop 
+          marqueeText="Family ✦ Faith ✦ Friendship ✦ Purpose ✦ Islam ✦ growth ✦"
+          speed={4}
+          curveAmount={500}
+          direction="right"
+          interactive={true}
+          className="identity"
+        />
        </div>
-
+        <Footer1/>
       </main>
     </>
 

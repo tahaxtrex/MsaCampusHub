@@ -11,7 +11,7 @@ const NavBar = () => {
                 <div className="px-6 py-4 flex justify-between max-w-7x items-center text-gray-900">
                     <div className=" flex flex-row items-center ">
                         <div className="mx-4">
-                            <img src={logo} className=" max-h-10 ml-2"/>
+                            <Link to={"/"}><img src={logo} className=" max-h-10 ml-2"/></Link>
                         </div>
                         <div>
                             <Link to={"/"} className="p-4 hover:text-shadow-2xs">Home</Link>
