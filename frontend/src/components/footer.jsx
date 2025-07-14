@@ -10,7 +10,7 @@ const Footer1 = ()=>{
     return (
         <>
             <footer className="justify-center items-center mt-6 backdrop-blur-md shadow-inner bg-white/15 h-52">
-                <section className=" max-w-screen-xl mx-auto px-6 py-10 grid grid-cols-1 md:grid-cols-3 gap-8 justify-center items-center bg-amber-400">
+                <section className=" max-w-screen-xl mx-auto px-6 py-10 grid grid-cols-1 md:grid-cols-3 gap-8 justify-center items-center bg-gray-100">
                     <div className="flex items-center space-x-3">
                         <Link to={"https://www.instagram.com/muslimsofcub/"}>
                             <SlSocialInstagram className="h-8 w-8 mx-2 hover:scale-110 transition-transform duration-300"></SlSocialInstagram>
@@ -21,9 +21,9 @@ const Footer1 = ()=>{
                         <Link to={'https://www.linkedin.com/in/taha-hbirri-84a524311/'}>
                             <CiLinkedin className="h-10 w-10 mx-2 hover:scale-110 transition-transform duration-300"></CiLinkedin>
                         </Link>
-                        <Link>
+                        <a href="mailto:{hbirritaha@gmail.com}?subject={subject}&body={body}">
                             <MdOutlineMailOutline className="h-10 w-10 mx-2 hover:scale-110 transition-transform duration-300"/>
-                        </Link>
+                        </a>
                     </div>
                     <div>
 

@@ -17,7 +17,7 @@ const NavBar = () => {
                             <Link to={"/"} className="p-4 hover:text-shadow-2xs">Home</Link>
                         </div>
                         <div>
-                            <Link to={"/"} className={navproperties}>Prayer time</Link>
+                            <Link to={"/prayerpage"} className={navproperties}>Prayer time</Link>
                         </div>
                         <div>
                             <Link to={"/"}className={navproperties}>Calendar</Link>

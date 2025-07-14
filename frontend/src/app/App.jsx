@@ -22,7 +22,7 @@ function App() {
           curveAmount={500}
           direction="right"
           interactive={true}
-          className="identity"
+          className="identity -mt-20"
         />
        </div>
         <Footer1/>
