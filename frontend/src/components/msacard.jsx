@@ -4,18 +4,16 @@ import logo from '../assets/msapng.png'
 import BlurText from "./liner";
 
 
-
-
 const MsaCard = () => {
 
     return (
         <>
-        <div className=' flex justify-around  mt-14 items-end flex-wrap'>
+        <div className=' flex justify-around items-end flex-wrap mt-11'>
             
                 <section className="whitespace-pre-line flex flex-col items-center justify-center py-50 px-1 flex-wrap">
                     <SplitText
                     text={"The Muslim Student Association"}
-                    className="text-4xl sm:text-3xl lg:text-5xl font-bold font-serif text-gray-800 text-center leading-tight"
+                    className="text-3xl sm:text-3xl md:4xl lg:text-5xl font-bold font-serif text-gray-800 text-center leading-tight flex-wrap"
                     delay={50}
                     duration={0.6}
                     ease="power3.out"
@@ -36,26 +34,24 @@ const MsaCard = () => {
                         />
                 </section>
 
- 
-       
-         <TiltedCard
-          imageSrc={logo}
-          altText="msa logo"
-          captionText="hover me"
-          containerHeight="500px"
-          containerWidth="500px"
-          imageHeight="500px"
-          imageWidth="500px"
-          rotateAmplitude={18}
-          scaleOnHover={1.1}
-          showMobileWarning={false}
-          showTooltip={true}
-          displayOverlayContent={true}
-          overlayContent={
-            <p className="tilted-card-demo-text mr-10 ">
-            </p>
-          }
-               />
+             <TiltedCard
+              imageSrc={logo}
+              altText="msa logo"
+              captionText="hover me"
+              containerHeight="500px"
+              containerWidth="500px"
+              imageHeight="500px"
+              imageWidth="500px"
+              rotateAmplitude={18}
+              scaleOnHover={1.1}
+              showMobileWarning={false}
+              showTooltip={true}
+              displayOverlayContent={true}
+              overlayContent={
+                <p className="tilted-card-demo-text mt-12 mr-10">
+                </p>
+              }
+              />
        </div>
        </>
     )

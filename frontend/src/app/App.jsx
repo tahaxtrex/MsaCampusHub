@@ -4,10 +4,13 @@ import NavBar from '../components/navbar';
 import './App.css'
 import CurvedLoop from '../components/identity';
 import MsaCard from '../components/msacard';
+import InfiniteMenu from '../components/eventscard';
 
 
 
 function App() {
+
+
   return (
     <>
       <main className="min-h-screen">
@@ -25,6 +28,7 @@ function App() {
           className="identity -mt-20"
         />
        </div>
+
         <Footer1/>
       </main>
     </>
