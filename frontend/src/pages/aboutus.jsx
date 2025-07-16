@@ -22,7 +22,7 @@ function AboutUs() {
             description: 'Computer science student'
           },
           {
-            image: 'https://picsum.photos/500/500?grayscale',
+            image: 'https://plus.unsplash.com/premium_photo-1670148434900-5f0af77ba500?q=80&w=987&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
             link: 'https://google.com/',
             title: 'Item 3',
             description: 'Computer science student'

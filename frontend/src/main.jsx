@@ -12,7 +12,7 @@ createRoot(document.getElementById('root')).render(
       <Routes>
       
         <Route path="/" element={< App/>} />
-        <Route path="/prayerpage" element={< Prayer/>} />
+        <Route path="/prayertime" element={< Prayer/>} />
         <Route path="/aboutus" element={< AboutUs/>} />
       </Routes>
     </BrowserRouter>

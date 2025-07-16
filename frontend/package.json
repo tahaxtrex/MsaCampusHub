@@ -16,6 +16,7 @@
     "@lordicon/react": "^1.11.0",
     "@mui/material": "^7.2.0",
     "@tailwindcss/vite": "^4.1.11",
+    "axios": "^1.10.0",
     "framer-motion": "^12.23.3",
     "gl-matrix": "^3.4.3",
     "gsap": "^3.13.0",
