@@ -21,7 +21,7 @@ const Footer1 = ()=>{
                         <Link to={'https://www.linkedin.com/in/taha-hbirri-84a524311/'}>
                             <CiLinkedin className="h-10 w-10 mx-2 hover:scale-110 transition-transform duration-300"></CiLinkedin>
                         </Link>
-                        <a href="mailto:{hbirritaha@gmail.com}?subject={subject}&body={body}">
+                        <a href="mailto:{msa.constructoruniversity@gmail.com}?subject={subject}&body={body}">
                             <MdOutlineMailOutline className="h-10 w-10 mx-2 hover:scale-110 transition-transform duration-300"/>
                         </a>
                     </div>
