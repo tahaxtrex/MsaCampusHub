@@ -2,7 +2,7 @@ import { useState } from 'react'
 import Footer1 from '../components/footer';
 import NavBar from '../components/navbar';
 import './App.css'
-import CurvedLoop from '../components/identity';
+import CurvedLoop from '../components/home/identity';
 import MsaCard from '../components/msacard';
 import InfiniteMenu from '../components/eventscard';
 
@@ -21,11 +21,11 @@ function App() {
        <div>
         <CurvedLoop 
           marqueeText="Family ✦ Faith ✦ Friendship ✦ Purpose ✦ Islam ✦ growth ✦"
-          speed={4}
+          speed={2}
           curveAmount={500}
           direction="right"
           interactive={true}
-          className="identity -mt-20"
+          className="identity"
         />
        </div>
 

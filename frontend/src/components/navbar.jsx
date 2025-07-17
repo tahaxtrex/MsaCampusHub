@@ -23,7 +23,7 @@ const NavBar = () => {
                             <Link to={"/"} className="p-4 hover:text-shadow-2xs">Home</Link>
                         </div>
                         <div>
-                            <Link to={"/prayerpage"} className={navproperties}>Prayer time</Link>
+                            <Link to={"/prayertime"} className={navproperties}>Prayer time</Link>
                         </div>
                         <div>
                             <Link to={"/"}className={navproperties}>Calendar</Link>
@@ -67,10 +67,10 @@ const NavBar = () => {
                 </div>
                 <section className="font-medium font-mono font-stretch-50% flex flex-col gap-4 justify-around">
                     <Link to="/">Home</Link>
-                    <Link to="/prayerpage">Prayer Time</Link>
+                    <Link to="/prayertime">Prayer Time</Link>
                     <Link to="/">Calendar</Link>
                     <Link to="/">Donate</Link>
-                    <Link to="/">About Us</Link>
+                    <Link to="/aboutus">About Us</Link>
                 </section>
             </div>
             )}

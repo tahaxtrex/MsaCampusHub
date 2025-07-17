@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import Footer1 from '../components/footer';
 import NavBar from '../components/navbar';
-import MsaCard from '../components/msacard';
+import PrayerCard from '../components/prayerpage/prayercard';
 
 
 
@@ -10,8 +10,8 @@ function Prayer() {
     <>
       <main className="min-h-screen">
         <NavBar/>
-        <MsaCard/>
-      
+        <PrayerCard/>
+        <br /><br /><br /><br /><br /><br /><br />
         <Footer1/>
       </main>
     </>

@@ -1,8 +1,9 @@
 const express = require("express");
 const app = express();
-const   Axios = require("axios");
+const Axios = require("axios");
+const cors = require("cors")
 
-
+app.use(cors())
 
 app.get('/prayertime', async (req, res)=>{
     try {

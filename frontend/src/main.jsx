@@ -1,7 +1,7 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import App from './app/App.jsx'
-import Prayer from './pages/prayerpage.jsx'
+import Prayer from './pages/prayertime.jsx'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import './app/index.css'
 import AboutUs from './pages/aboutus.jsx'

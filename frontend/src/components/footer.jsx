@@ -9,7 +9,7 @@ const Footer1 = ()=>{
     const size = ' h-8 w-8'
     return (
         <>
-            <footer className="justify-center items-center mt-6 backdrop-blur-md shadow-inner bg-white/15 h-52">
+            <footer className=" justify-center items-center mt-6 backdrop-blur-md shadow-inner max-h-7 bg-white/15 h-52">
                 <section className=" max-w-screen-xl mx-auto px-6 py-10 grid grid-cols-1 md:grid-cols-3 gap-8 justify-center items-center bg-gray-100">
                     <div className="flex items-center space-x-3">
                         <Link to={"https://www.instagram.com/muslimsofcub/"}>
