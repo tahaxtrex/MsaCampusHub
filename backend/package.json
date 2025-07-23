@@ -1,9 +1,46 @@
 {
+
+  "name": "backend",
+
+  "version": "1.0.0",
+
+  "main": "src/index.js",
+
+  "scripts": {
+
+    "dev": "nodemon src/index.js"
+
+  },
+
+  "type": "module",
+
+  "keywords": [],
+
+  "author": "Taha Hbirri",
+
+  "license": "ISC",
+
+  "description": "",
+
   "dependencies": {
+
     "axios": "^1.10.0",
+
     "cors": "^2.8.5",
+
     "dotenv": "^17.2.0",
+
     "express": "^5.1.0",
+
+    "mongoose": "^8.16.4"
+
+  },
+
+  "devDependencies": {
+
     "nodemon": "^3.1.10"
+
   }
+
 }
+
