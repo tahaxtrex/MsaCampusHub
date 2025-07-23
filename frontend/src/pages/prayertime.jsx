@@ -1,6 +1,3 @@
-import { useState } from 'react'
-import Footer1 from '../components/footer';
-import NavBar from '../components/navbar';
 import PrayerCard from '../components/prayerpage/prayercard';
 
 

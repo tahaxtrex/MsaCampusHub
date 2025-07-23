@@ -1,7 +1,3 @@
-import { useState } from 'react'
-import Footer1 from '../components/footer';
-import NavBar from '../components/navbar';
-import Taha from '../components/aboutus/tahacard';
 import InfiniteMenu from '../components/eventscard';
 
 

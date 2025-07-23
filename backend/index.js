@@ -6,19 +6,18 @@ const dotenv = require("dotenv")
 
 dotenv.config();
 
-app.use(cors())
+app.use(cors());
 
 app.get('/prayertime', async (req, res)=>{
     try {
-        const data = await Axios.get(process.env.SALAT_API)
-        res.json(data.data.data.timings)  
+        const data = await Axios.get(process.env.SALAT_API);
+        res.json(data.data.data.timings);
     } catch (error) {
-        res.status(404).send('data not found')
+        res.status(404).send('data not found');
     }
-    
-})
+});
 
 
 app.listen(process.env.PORT, ()=>{
     console.log("app is listening")
-})
+});
