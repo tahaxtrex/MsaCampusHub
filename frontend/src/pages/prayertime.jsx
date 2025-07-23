@@ -9,10 +9,8 @@ function Prayer() {
   return (
     <>
       <main className="min-h-screen">
-        <NavBar/>
         <PrayerCard/>
         <br /><br /><br /><br /><br /><br /><br />
-        <Footer1/>
       </main>
     </>
   );

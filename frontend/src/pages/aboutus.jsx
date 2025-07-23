@@ -37,13 +37,12 @@ function AboutUs() {
   return (
     <>
       <main className="min-h-screen">
-        <NavBar/>
+
 
         <div style={{ height: '800px', position: 'relative' }}>
           <InfiniteMenu items={items}/>
         </div>
-      
-        <Footer1/>
+
       </main>
     </>
   );

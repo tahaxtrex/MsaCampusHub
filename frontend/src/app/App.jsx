@@ -1,11 +1,12 @@
 import { useState } from 'react'
 import Footer1 from '../components/footer';
 import NavBar from '../components/navbar';
+import { Routes, Route } from 'react-router-dom'
 import './App.css'
-import CurvedLoop from '../components/home/identity';
-import MsaCard from '../components/msacard';
-import InfiniteMenu from '../components/eventscard';
 
+import Home from '../pages/homepage.jsx';
+import Prayer from '../pages/prayertime.jsx'
+import AboutUs from '../pages/aboutus.jsx'
 
 
 function App() {
@@ -13,28 +14,16 @@ function App() {
 
   return (
     <>
-      <main className="min-h-screen">
-       <NavBar/>
-
-      <MsaCard/>
-      
-       <div>
-        <CurvedLoop 
-          marqueeText="Family ✦ Faith ✦ Friendship ✦ Purpose ✦ Islam ✦ growth ✦"
-          speed={2}
-          curveAmount={500}
-          direction="right"
-          interactive={true}
-          className="identity"
-        />
-       </div>
-
-        <Footer1/>
-      </main>
+    <div>
+      <NavBar/>
+      <Routes>
+        <Route path="/" element={< Home/>} />
+        <Route path="/prayertime" element={< Prayer/>} />
+        <Route path="/aboutus" element={< AboutUs/>} />
+      </Routes>
+      <Footer1/>
+      </div>
     </>
-
-    
-
   );
 }
 
