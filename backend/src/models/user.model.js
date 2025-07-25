@@ -15,11 +15,6 @@ const userSchema = new mongoose.Schema({
         required: true,
         minlength: 6
     },
-    profilepic:{
-        type: String,
-        unique: true,
-        default: ""
-    },
     nationnality:{
         type: String,
         default: ""

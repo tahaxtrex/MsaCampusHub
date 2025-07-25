@@ -1,16 +1,13 @@
 import express from "express"
-import Axios from "axios"
+import { login, logout, signup } from "../controllers/auth.controllers.js";
 
 
 const router = express.Router();
 
-router.get('/', async (req, res)=>{
-    try {
-        res.send("hello")
-    } catch (error) {
-        res.status(404).send('data not found');
-    }
-});
+router.post("/signup", signup);
 
+router.post("/login", login);
 
-export default router
+router.post("/logout", logout);
+
+export default router;
