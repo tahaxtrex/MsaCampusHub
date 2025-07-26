@@ -4,7 +4,8 @@ import Password from './password.jsx'
 import { Eye, EyeOff } from 'lucide-react';
 import { useAuthStore } from "../../store/useAuthStore.js";
 import { useState } from "react";
-
+import { Loader2 } from "lucide-react";
+import { Navigate } from "react-router";
 
 
 function SignupCard() {
@@ -17,16 +18,26 @@ function SignupCard() {
 
 
     const [showPassword, setShowPassword] = useState(false);
-    const {signup, isSigninup} = useAuthStore();
+    const [isSignedUp, setisSignedUp] = useState(false);
+    const {signup, isSigninup, authUser} = useAuthStore();
 
     const toggleShowPassword = ()=>{
-        setShowPassword(showPassword => !showPassword)
+      setShowPassword(showPassword => !showPassword)
     }
+
+    const toggleIssignedup = () => {
+      setisSignedUp(isSignedUp => !isSignedUp)
+    }
+
 
     const handleSubmit = (e) => {
         e.preventDefault();
         console.log(formData)
         signup(formData);
+        if(authUser){
+          toggleIssignedup();
+        }
+        
     }
 
     const handleChange = (e) => {
@@ -54,7 +65,7 @@ function SignupCard() {
               
               {showPassword ? <button onClick={toggleShowPassword} className='transition-all'>
                 <Eye size={18}/>
-              </button> : <button className='transition-all' onClick={toggleShowPassword}>
+              </button> : <button onClick={toggleShowPassword}>
                 <EyeOff size={18} />
               </button> }
             </div>
@@ -66,6 +77,12 @@ function SignupCard() {
           </div>
           {isSigninup ? <Loader2>loading...</Loader2>: <a href="/login" className='underline text-blue-900 mt-2'> Login </a>}
         </form>
+
+        
+
+        {
+          isSignedUp &&  <Navigate to="/home" replace={true} />
+        }
         
       </div>
     </div>

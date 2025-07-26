@@ -6,7 +6,7 @@ import { MdOutlineMailOutline } from "react-icons/md";
 
 
 const Footer1 = ()=>{
-    const size = ' h-8 w-8'
+    const size = 'h-8 w-8'
     return (
         <>
             <footer className=" justify-center items-center mt-6 backdrop-blur-md shadow-inner max-h-7 bg-white/15 h-52">
@@ -24,9 +24,6 @@ const Footer1 = ()=>{
                         <a href="mailto:{msa.constructoruniversity@gmail.com}?subject={subject}&body={body}">
                             <MdOutlineMailOutline className="h-10 w-10 mx-2 hover:scale-110 transition-transform duration-300"/>
                         </a>
-                    </div>
-                    <div>
-
                     </div>
                     <div>
 

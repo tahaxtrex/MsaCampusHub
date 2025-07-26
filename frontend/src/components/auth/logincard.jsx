@@ -3,6 +3,8 @@ import Password from './password.jsx'
 import { Eye, EyeOff } from 'lucide-react';
 import { useAuthStore } from "../../store/useAuthStore.js";
 import { useState } from "react";
+import { Loader2 } from "lucide-react";
+import { Navigate } from 'react-router';
 
 
 
@@ -10,22 +12,29 @@ function LoginCard() {
 
     const [formData, setFormData] = useState({
         username: "",
-        email: "",
         password: "",
     });
 
 
     const [showPassword, setShowPassword] = useState(false);
-    const {login, isLoggingIn} = useAuthStore();
+    const [isLoggedIn, setIsLoggedIn] = useState(false);
+    const {login, isLoggingIn, authUser} = useAuthStore();
 
     const toggleShowPassword = ()=>{
         setShowPassword(showPassword => !showPassword)
+    }
+
+    const toggleIsLoggedIn = ()=>{
+      setIsLoggedIn(isLoggedIn => !isLoggedIn)
     }
 
     const handleSubmit = (e) => {
         e.preventDefault();
         console.log(formData)
         login(formData);
+        if(authUser) {
+          toggleIsLoggedIn();
+        }
     }
 
     const handleChange = (e) => {
@@ -64,6 +73,10 @@ function LoginCard() {
           </div>
           {isLoggingIn ? <Loader2>loading...</Loader2>: <a href="/signup" className='underline text-blue-900 mt-2'> no account? signup! </a>}
         </form>
+
+        {
+          isLoggedIn &&  <Navigate to="/home" replace={true} />
+        }
         
       </div>
     </div>
