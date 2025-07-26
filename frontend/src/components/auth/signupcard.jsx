@@ -3,7 +3,7 @@ import Username from './username.jsx'
 import Password from './password.jsx'
 import { Eye, EyeOff } from 'lucide-react';
 import { useAuthStore } from "../../store/useAuthStore.js";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Loader2 } from "lucide-react";
 import { Navigate } from "react-router";
 
@@ -25,19 +25,18 @@ function SignupCard() {
       setShowPassword(showPassword => !showPassword)
     }
 
-    const toggleIssignedup = () => {
-      setisSignedUp(isSignedUp => !isSignedUp)
-    }
+    useEffect(() => {
+      if (authUser) {
+        setisSignedUp(true);
+      }
+    }, [authUser]);
+
 
 
     const handleSubmit = (e) => {
         e.preventDefault();
         console.log(formData)
-        signup(formData);
-        if(authUser){
-          toggleIssignedup();
-        }
-        
+        signup(formData);  
     }
 
     const handleChange = (e) => {
@@ -63,7 +62,7 @@ function SignupCard() {
             <div className='flex flex-row gap-2 items-center justify-center'>
               <Password onChange={handleChange} value={formData.password} name={"password"} showpassword={showPassword}/>
               
-              {showPassword ? <button onClick={toggleShowPassword} className='transition-all'>
+              {showPassword ? <button type="button" onClick={toggleShowPassword} className='transition-all'>
                 <Eye size={18}/>
               </button> : <button onClick={toggleShowPassword}>
                 <EyeOff size={18} />
@@ -75,7 +74,13 @@ function SignupCard() {
           <div className='flex flex-row gap-3 mt-4'>
             <button type='submit' className="btn btn-success w-full rounded-2xl border-green-800 shadow-2xl" disabled={isSigninup}>Signup !</button>
           </div>
-          {isSigninup ? <Loader2>loading...</Loader2>: <a href="/login" className='underline text-blue-900 mt-2'> Login </a>}
+          {isSigninup ? (
+            <div className="flex justify-center mt-2">
+              <Loader2 className="animate-spin text-green-900" />
+            </div>
+          ) : (
+            <a href="/login" className="underline text-blue-900 mt-2">Login</a>
+          )}
         </form>
 
         

@@ -2,7 +2,7 @@ import Username from './username.jsx'
 import Password from './password.jsx'
 import { Eye, EyeOff } from 'lucide-react';
 import { useAuthStore } from "../../store/useAuthStore.js";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Loader2 } from "lucide-react";
 import { Navigate } from 'react-router';
 
@@ -24,9 +24,11 @@ function LoginCard() {
         setShowPassword(showPassword => !showPassword)
     }
 
-    const toggleIsLoggedIn = ()=>{
-      setIsLoggedIn(isLoggedIn => !isLoggedIn)
-    }
+    useEffect(() => {
+      if (authUser) {
+        setIsLoggedIn(true);
+      }
+    }, [authUser]);
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -61,7 +63,7 @@ function LoginCard() {
               
               {showPassword ? <button onClick={toggleShowPassword} className='transition-all'>
                 <Eye size={18}/>
-              </button> : <button className='transition-all' onClick={toggleShowPassword}>
+              </button> : <button type='button' className='transition-all' onClick={toggleShowPassword}>
                 <EyeOff size={18} />
               </button> }
             </div>
@@ -71,7 +73,13 @@ function LoginCard() {
           <div className='flex flex-row gap-3 mt-4'>
             <button type='submit' className="btn btn-success w-full rounded-2xl border-green-800 shadow-2xl" disabled={isLoggingIn}>Login</button>
           </div>
-          {isLoggingIn ? <Loader2>loading...</Loader2>: <a href="/signup" className='underline text-blue-900 mt-2'> no account? signup! </a>}
+          {isLoggedIn ? (
+            <div className="flex justify-center mt-2">
+              <Loader2 className="animate-spin text-green-900" />
+            </div>
+          ) : (
+            <a href="/login" className="underline text-blue-900 mt-2">Signup</a>
+          )}
         </form>
 
         {
