@@ -17,15 +17,16 @@ const PrayerCard = ()=>{
     useEffect(() => {
         const fetchData = async () => {
             try {
-            const response = await Axios.get("http://localhost:8001/prayertime");
-            setfajrtime(response.data.Fajr);
-            setduhrtime(response.data.Dhuhr);
-            setasrtime(response.data.Asr);
-            setmaghribtime(response.data.Maghrib);
-            setishatime(response.data.Isha);
-            console.log(response.data);
+                console.log(`${import.meta.env.VITE_BACKEND_URL}/prayertime`)
+                const response = await Axios.get(`${import.meta.env.VITE_BACKEND_URL}/prayertime`);
+                setfajrtime(response.data.Fajr);
+                setduhrtime(response.data.Dhuhr);
+                setasrtime(response.data.Asr);
+                setmaghribtime(response.data.Maghrib);
+                setishatime(response.data.Isha);
+                console.log(response.data);
             } catch (error) {
-            console.error("Fetch error:", error.message);
+                console.error("Fetch error:", error.message);
             }
         };
         fetchData();

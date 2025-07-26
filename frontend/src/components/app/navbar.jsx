@@ -1,0 +1,81 @@
+import { Link } from "react-router-dom";
+import logo from ".../assets/msapng.png"
+import { Sling as Hamburger } from 'hamburger-react'
+import { useState } from "react";
+import TiltedCard from './logo'
+
+const NavBar = () => {
+
+    const navproperties = 'p-4 hover:text-shadow-2xs'
+    const[Menu, setMenu] = useState(false)
+
+    
+    return (
+        <>
+
+            <nav className="hidden lg:flex sticky top-6 z-50 mx-32 mt-6 backdrop-blur-md bg-white/5 shadow-xl rounded-4xl border border-white/10">
+                <div className="px-6 py-4 flex justify-between max-w-7x items-center text-gray-900">
+                    <div className="hidden lg:flex flex-row items-center ">
+                        <div className="mx-4">
+                            <Link to={"/"}><img src={logo} className=" max-h-10 ml-2"/></Link>
+                        </div>
+                        <div>
+                            <Link to={"/"} className="p-4 hover:text-shadow-2xs">Home</Link>
+                        </div>
+                        <div>
+                            <Link to={"/prayertime"} className={navproperties}>Prayer time</Link>
+                        </div>
+                        <div>
+                            <Link to={"/"}className={navproperties}>Calendar</Link>
+                        </div>
+                        <div>
+                            <Link to={"/"}className={navproperties}>Donate</Link>
+                        </div>
+                        <div>
+                            <Link to={"/aboutus"}className={navproperties}>About us</Link>
+                        </div>
+                    </div>
+                </div>
+            </nav>
+            <div className="lg:hidden m-7">
+                <Hamburger toggled={Menu} toggle={setMenu} rounded color="green"/>
+                <div className="hidden lg:flex">
+                             <TiltedCard
+                              imageSrc={logo}
+                              altText="msa logo"
+                              captionText="hover me"
+                              containerHeight="200px"
+                              containerWidth="200px"
+                              imageHeight="200px"
+                              imageWidth="200px"
+                              rotateAmplitude={18}
+                              scaleOnHover={1.1}
+                              showMobileWarning={false}
+                              showTooltip={true}
+                              displayOverlayContent={true}
+                              overlayContent={
+                                <p className="tilted-card-demo-text mr-10">
+                                </p>
+                              }
+                              />
+                         </div>
+            </div>
+            {Menu && (
+            <div className="fixed top-0 left-0 w-screen h-screen bg-green-600 z-50 text-white p-6 flex flex-col gap-6 transition-all">
+                <div className="m-9">
+                    <Hamburger toggled={Menu} toggle={setMenu} color="white" />
+                </div>
+                <section className="font-medium font-mono font-stretch-50% flex flex-col gap-4 justify-around">
+                    <Link to="/">Home</Link>
+                    <Link to="/prayertime">Prayer Time</Link>
+                    <Link to="/">Calendar</Link>
+                    <Link to="/">Donate</Link>
+                    <Link to="/aboutus">About Us</Link>
+                </section>
+            </div>
+            )}
+        </>
+    )
+}
+
+export default NavBar
