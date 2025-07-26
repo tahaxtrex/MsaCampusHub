@@ -3,7 +3,7 @@ import React from 'react'
 function Email({ value, onChange, name }) {
   return (
     <div >
-      <label className="input validator">
+      <label className="input validator border-2 border-green-800">
         <svg className="h-[1em] opacity-50" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
             <g
             strokeLinejoin="round"
@@ -25,7 +25,7 @@ function Email({ value, onChange, name }) {
         name={name}
         />
         </label>
-        <div className="validator-hint hidden">Enter valid email address</div>
+        <div className="validator-hint text-red-600 hidden">Enter valid email address</div>
     </div>
   )
 }

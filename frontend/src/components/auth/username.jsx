@@ -3,7 +3,7 @@ import React from 'react'
 function Username({ value, onChange, name }) {
   return (
     <div>
-        <label className="input validator">
+        <label className="input validator border-2 border-green-800">
         <svg className="h-[1em] opacity-50" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
             <g
             strokeLinejoin="round"
@@ -29,7 +29,7 @@ function Username({ value, onChange, name }) {
             name={name}
         />
         </label>
-        <p className="validator-hint hidden">
+        <p className="validator-hint text-red-600 hidden">
         Must be 3 to 30 characters
         </p>
     </div>
