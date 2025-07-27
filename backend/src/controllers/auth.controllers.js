@@ -121,3 +121,25 @@ export const logout = (req, res) => {
     }
     
 }
+
+export const checkAuth = async (req, res) => {
+  try {
+    const user = await User.findById(req.session.userId).select("-password");
+
+    if (user) {
+      return res.status(200).json({
+        message: "user logged in",
+        user: {
+          _id: user._id,
+          username: user.username,
+          email: user.email
+        }
+      });
+    } else {
+      return res.status(404).json({ message: "User not found" });
+    }
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ message: "Server error" });
+  }
+};

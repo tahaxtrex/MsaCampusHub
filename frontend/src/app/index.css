@@ -1,4 +1,7 @@
 @import "tailwindcss";
+@plugin "daisyui" {
+  themes: false;
+}
 
 body {
   display: flex;
@@ -6,11 +9,9 @@ body {
   min-height: 100vh;
   margin: 0;
   padding: 0;
-  background-color: #f0f0f0; 
+  background-color: #f0f0f0;
 }
-
 
 main {
   flex-grow: 1;
 }
-
