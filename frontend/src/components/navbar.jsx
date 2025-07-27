@@ -7,12 +7,15 @@ import { useAuthStore } from "../store/useAuthStore";
 
 const NavBar = () => {
 
-    const navproperties = 'p-4 hover:text-shadow-2xs'
+    const navproperties = 'p-4 hover:text-shadow-2xs items-center'
     const[Menu, setMenu] = useState(false)
 
-    const {authUser, isCheckingAuth} = useAuthStore();
-    
-    
+    const {authUser, checkAuth} = useAuthStore();
+
+    useEffect(()=>{
+        checkAuth();
+    }, []);
+
     
     return (
         <>
@@ -39,14 +42,17 @@ const NavBar = () => {
                             <Link to={"/aboutus"}className={navproperties}>About us</Link>
                         </div>
                     </div>
-                    <div className="hidden lg:flex flex-row items-end  ">
-                        <div>
-                            <Link to={"/login"} className={navproperties}>Login</Link>
-                        </div>
-                        <div>
-                            <Link to={"/signup"}className={navproperties}>Signup</Link>
-                        </div>
+                    {!authUser ? (
+                    <div className="hidden lg:flex flex-row items-end">
+                        <Link to="/login" className={navproperties}>Login</Link>
+                        <Link to="/signup" className={navproperties}>Signup</Link>
                     </div>
+                    ) : (
+                    <div className="hidden lg:flex flex-row items-end">
+                        <Link to={'/profile'}><img src="/user/user.png" alt="user avatar" className="h-10 rounded-full" /></Link>
+                        <Link to="/profile" className= 'p-4 hover:text-shadow-2xs items-center bg-amber-300' >Profile</Link>
+                    </div>
+                    )}
                 </div>
             </nav>
             <div className="lg:hidden m-7">

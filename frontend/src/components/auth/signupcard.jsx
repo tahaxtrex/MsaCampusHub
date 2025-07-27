@@ -30,9 +30,7 @@ function SignupCard() {
         setisSignedUp(true);
       }
     }, [authUser]);
-
-
-
+    
     const handleSubmit = (e) => {
         e.preventDefault();
         console.log(formData)
