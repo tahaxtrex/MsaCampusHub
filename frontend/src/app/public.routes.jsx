@@ -2,11 +2,9 @@ import { Navigate } from 'react-router-dom';
 import { useAuthStore } from '../store/useAuthStore';
 
 function PublicRoute({ children }) {
-  const { authUser, loading } = useAuthStore();
+  const { firebaseUser } = useAuthStore();
 
-  if (loading) return null; // optional: show loading screen
-
-  return authUser ? <Navigate to="/home" replace /> : children;
+  return firebaseUser ? <Navigate to="/home" replace /> : children;
 }
 
 export default PublicRoute;

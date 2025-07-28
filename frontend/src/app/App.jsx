@@ -37,13 +37,7 @@ function App() {
         <Route path="/login" element={
           <PublicRoute><Login /></PublicRoute>
         } />
-
-        <Route path="/settings" element={
-          <PrivateRoute><Home /></PrivateRoute>
-        } />
-        <Route path="/profile" element={
-          <PrivateRoute><Profile /></PrivateRoute>
-        } />
+        <Route path="/profile" element={<Profile />} />
       </Routes>
       <Footer1 />
     </div>
