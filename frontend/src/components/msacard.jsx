@@ -27,10 +27,10 @@ const MsaCard = () => {
                     
                     <BlurText
                         text="Your new family away from home"
-                        delay={150}
+                        delay={200}
                         animateBy="words"
                         direction="top"
-                        className="text-2xl mb-8 italic "
+                        className="text-3xl mb-8 italic "
                         />
                 </section>
 
