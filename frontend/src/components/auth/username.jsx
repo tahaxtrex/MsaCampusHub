@@ -19,8 +19,8 @@ function Username({ value, onChange, name }) {
         <input
             type="text"
             required
-            placeholder="Username"
-            pattern="[A-Za-z][A-Za-z0-9\-]*"
+            placeholder="Full name"
+            pattern="^[A-Za-z]+(?: [A-Za-z]+)*$"
             minLength="3"
             maxLength="30"
             title="Only letters, numbers or dash"
