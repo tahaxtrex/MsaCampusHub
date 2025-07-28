@@ -52,7 +52,7 @@ const NavBar = () => {
                     </div>
                     ) : (
                     <div className="hidden lg:flex flex-row items-end">
-                        <Link to="/profile" className= 'p-4 hover:text-shadow-2xs items-center' >Profile</Link>
+                        <Link to="/profile" className= 'p-4 hover:text-shadow-2xs items-center' >{authUser.username}</Link>
                         <Link to={'/profile'}><img src="/user/user.png" alt="user avatar" className="h-10 rounded-full mb-1.5" /></Link>
                     </div>
                     )}

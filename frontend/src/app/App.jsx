@@ -16,11 +16,13 @@ import PrivateRoute from './private.routes.jsx';
 import PublicRoute from './public.routes.jsx';
 
 function App() {
-  const { checkAuth } = useFirebaseStore();
+  const { checkAuth, authUser } = useFirebaseStore();
 
-  useEffect(() => {
+  useEffect( () => {
     checkAuth();
   }, []);
+
+  console.log(authUser)
 
   return (
     <div>
