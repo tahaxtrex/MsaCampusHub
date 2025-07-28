@@ -12,6 +12,7 @@ import Prayer from '../pages/prayertime.jsx'
 import AboutUs from '../pages/aboutus.jsx'
 import Signup from '../pages/auth/signup.jsx';
 import Login from '../pages/auth/login.jsx';
+import Profile from '../pages/auth/profile.jsx';
 
 
 function App() {
@@ -41,7 +42,7 @@ function App() {
         <Route path="/signup" element={< Signup/>} />
         <Route path="/login" element={< Login/>} />
         <Route path="/settings" element={< Home/>} />
-        <Route path="/profile" element={< Home/>} />
+        <Route path="/profile" element={<Profile />} />
       </Routes>
       <Footer1/>
       </div>
