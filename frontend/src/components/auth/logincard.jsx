@@ -61,7 +61,7 @@ function LoginCard() {
             <div className='flex flex-row gap-2 items-center justify-center'>
               <Password onChange={handleChange} value={formData.password} name={"password"} showpassword={showPassword}/>
               
-              {showPassword ? <button onClick={toggleShowPassword} className='transition-all'>
+              {showPassword ? <button type='button' onClick={toggleShowPassword} className='transition-all'>
                 <Eye size={18}/>
               </button> : <button type='button' className='transition-all' onClick={toggleShowPassword}>
                 <EyeOff size={18} />
