@@ -30,7 +30,7 @@ function SignupCard() {
         setisSignedUp(true);
       }
     }, [authUser]);
-    
+
     const handleSubmit = (e) => {
         e.preventDefault();
         console.log(formData)
@@ -62,7 +62,7 @@ function SignupCard() {
               
               {showPassword ? <button type="button" onClick={toggleShowPassword} className='transition-all'>
                 <Eye size={18}/>
-              </button> : <button onClick={toggleShowPassword}>
+              </button> : <button type="button" onClick={toggleShowPassword}>
                 <EyeOff size={18} />
               </button> }
             </div>

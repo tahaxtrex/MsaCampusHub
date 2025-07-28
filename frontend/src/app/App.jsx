@@ -4,7 +4,8 @@ import Footer1 from '../components/footer';
 import NavBar from '../components/navbar';
 
 import { useAuthStore } from '../store/useAuthStore.js';
-import { useEffect } from 'react';
+import { useFirebaseStore } from '../store/useFirebaseStore.js';
+import { use, useEffect } from 'react';
 
 import Home from '../pages/homepage.jsx';
 import Prayer from '../pages/prayertime.jsx'
@@ -15,13 +16,17 @@ import Login from '../pages/auth/login.jsx';
 
 function App() {
 
-/*   const {authUser, checkAuth } = useAuthStore();
+  const { checkAuth } = useFirebaseStore(); // re-render
+  
+  useEffect(() => {
+    checkAuth()
+  }, [])
+  
 
-  useEffect(()=>{
-    checkAuth();
-  }, [checkAuth])
+  // useEffect(() => {
+  //     useFirebaseStore.getState().checkAuth(); // no re-render subscription
+  //   }, []);  
 
-  console.log(authUser); */
 
   return (
     <>

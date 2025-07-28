@@ -4,13 +4,16 @@ import { Sling as Hamburger } from 'hamburger-react'
 import { useEffect, useState } from "react";
 import TiltedCard from "./logo";
 import { useAuthStore } from "../store/useAuthStore";
+import { useFirebaseStore } from "../store/useFirebaseStore";
 
 const NavBar = () => {
 
     const navproperties = 'p-4 hover:text-shadow-2xs items-center'
     const[Menu, setMenu] = useState(false)
 
-    const {authUser, checkAuth} = useAuthStore();
+    // const {authUser, checkAuth} = useAuthStore();
+
+    const {checkAuth, authUser} = useFirebaseStore();
 
     useEffect(()=>{
         checkAuth();
@@ -49,8 +52,8 @@ const NavBar = () => {
                     </div>
                     ) : (
                     <div className="hidden lg:flex flex-row items-end">
-                        <Link to={'/profile'}><img src="/user/user.png" alt="user avatar" className="h-10 rounded-full" /></Link>
-                        <Link to="/profile" className= 'p-4 hover:text-shadow-2xs items-center bg-amber-300' >Profile</Link>
+                        <Link to="/profile" className= 'p-4 hover:text-shadow-2xs items-center' >Profile</Link>
+                        <Link to={'/profile'}><img src="/user/user.png" alt="user avatar" className="h-10 rounded-full mb-1.5" /></Link>
                     </div>
                     )}
                 </div>

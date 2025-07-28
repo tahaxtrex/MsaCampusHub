@@ -1,10 +1,10 @@
-import React from 'react'
 import LoginCard from '../../components/auth/logincard.jsx'
+import LoginCardFirebase from '../../components/firebase/authentification/logincard.jsx'
 
 function Login() {
   return (
     <div>
-      <LoginCard></LoginCard>
+      <LoginCardFirebase/>
       <br /><br /><br /><br /><br /><br />
     </div>
   )

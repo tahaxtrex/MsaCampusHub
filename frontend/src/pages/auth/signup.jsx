@@ -1,9 +1,10 @@
 import SignupCard from "../../components/auth/signupcard.jsx"
+import SignupCardFireBase from "../../components/firebase/authentification/signupcard.jsx"
 
 function Signup() {
   return (
     <div>
-      <SignupCard/>
+      <SignupCardFireBase/>
       <br /><br /><br /><br /><br /><br />
     </div>
   )
