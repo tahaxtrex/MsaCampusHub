@@ -1,5 +1,5 @@
-import SplitText from "../components/title";
-import TiltedCard from '../components/logo';
+import SplitText from "./title";
+import TiltedCard from './logo';
 import logo from '../assets/msapng.png'
 import BlurText from "./liner";
 
@@ -27,10 +27,10 @@ const MsaCard = () => {
                     
                     <BlurText
                         text="Your new family away from home"
-                        delay={200}
+                        delay={150}
                         animateBy="words"
                         direction="top"
-                        className="text-3xl mb-8 italic "
+                        className="text-2xl mb-8 italic "
                         />
                 </section>
 

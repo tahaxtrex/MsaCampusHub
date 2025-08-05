@@ -1,6 +1,6 @@
 
 
-export const checkAuth = (req, res, next) => {
+export const protectRoute = (req, res, next) => {
   if (req.session.userId) return next();
-  res.status(401).send('Not authenticated');
+  res.status(401).json({ message: 'Not authenticated' });
 }

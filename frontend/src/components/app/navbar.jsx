@@ -1,30 +1,20 @@
 import { Link } from "react-router-dom";
-import logo from "../assets/msapng.png"
+import logo from ".../assets/msapng.png"
 import { Sling as Hamburger } from 'hamburger-react'
-import { useEffect, useState } from "react";
-import TiltedCard from "./logo";
-import { useAuthStore } from "../store/useAuthStore";
-import { useFirebaseStore } from "../store/useFirebaseStore";
+import { useState } from "react";
+import TiltedCard from './logo'
 
 const NavBar = () => {
 
-    const navproperties = 'p-4 hover:text-shadow-2xs items-center'
+    const navproperties = 'p-4 hover:text-shadow-2xs'
     const[Menu, setMenu] = useState(false)
-
-    // const {authUser, checkAuth} = useAuthStore();
-
-    const {checkAuth, authUser} = useFirebaseStore();
-
-    useEffect(()=>{
-        checkAuth();
-    }, []);
 
     
     return (
         <>
 
             <nav className="hidden lg:flex sticky top-6 z-50 mx-32 mt-6 backdrop-blur-md bg-white/5 shadow-xl rounded-4xl border border-white/10">
-                <div className="px-6 py-4 flex justify-between max-w-7x items-center text-gray-900 w-full">
+                <div className="px-6 py-4 flex justify-between max-w-7x items-center text-gray-900">
                     <div className="hidden lg:flex flex-row items-center ">
                         <div className="mx-4">
                             <Link to={"/"}><img src={logo} className=" max-h-10 ml-2"/></Link>
@@ -45,17 +35,6 @@ const NavBar = () => {
                             <Link to={"/aboutus"}className={navproperties}>About us</Link>
                         </div>
                     </div>
-                    {!authUser ? (
-                    <div className="hidden lg:flex flex-row items-end">
-                        <Link to="/login" className={navproperties}>Login</Link>
-                        <Link to="/signup" className={navproperties}>Signup</Link>
-                    </div>
-                    ) : (
-                    <div className="hidden lg:flex flex-row items-end">
-                        <Link to="/profile" className= 'p-4 hover:text-shadow-2xs items-center' >{authUser.username}</Link>
-                        <Link to={'/profile'}><img src="/user/user.png" alt="user avatar" className="h-10 rounded-full mb-1.5" /></Link>
-                    </div>
-                    )}
                 </div>
             </nav>
             <div className="lg:hidden m-7">
