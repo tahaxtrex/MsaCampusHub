@@ -29,7 +29,7 @@ const NavBar = () => {
                             <Link to={"/"}className={navproperties}>Calendar</Link>
                         </div>
                         <div>
-                            <Link to={"/"}className={navproperties}>Donate</Link>
+                            <Link to={"/aboutus"}className={navproperties}>Donate</Link>
                         </div>
                         <div>
                             <Link to={"/aboutus"}className={navproperties}>About us</Link>
@@ -69,7 +69,7 @@ const NavBar = () => {
                     <Link to="/">Home</Link>
                     <Link to="/prayertime">Prayer Time</Link>
                     <Link to="/">Calendar</Link>
-                    <Link to="/">Donate</Link>
+                    <Link to="/donate">Donate</Link>
                     <Link to="/aboutus">About Us</Link>
                 </section>
             </div>
