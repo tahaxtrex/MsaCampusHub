@@ -1,4 +1,3 @@
-
 import React from 'react'
 import { useFirebaseStore } from '../../store/useFirebaseStore'
 import { Navigate, useNavigate } from 'react-router';
@@ -20,7 +19,7 @@ function Profile() {
   }
 
   return (
-    <div>
+    <>
 
     <div className="h-screen pt-20">
       <div className="max-w-2xl mx-auto p-4 py-8">
@@ -60,9 +59,7 @@ function Profile() {
         </div>
           <button className='btn btn-active' onClick={handleClick}>logout</button>
         </div>
-      </div>
-    
-
+      </>
     
   )
 }

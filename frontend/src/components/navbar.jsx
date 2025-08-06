@@ -36,13 +36,13 @@ const NavBar = () => {
                             <Link to={"/prayertime"} className={navproperties}>Prayer time</Link>
                         </div>
                         <div>
-                            <Link to={"/"}className={navproperties}>Calendar</Link>
+                            <Link to={"/calendar"}className={navproperties}>Calendar</Link>
                         </div>
                         <div>
-                            <Link to={"/"}className={navproperties}>Donate</Link>
+                            <Link to={"/donate"}className={navproperties}>Donate</Link>
                         </div>
                         <div>
-                            <Link to={"/aboutus"}className={navproperties}>About us</Link>
+                            <Link to={"/about"}className={navproperties}>About us</Link>
                         </div>
                     </div>
                     {!authUser ? (
@@ -89,9 +89,9 @@ const NavBar = () => {
                 <section className="font-medium font-mono font-stretch-50% flex flex-col gap-4 justify-around">
                     <Link to="/">Home</Link>
                     <Link to="/prayertime">Prayer Time</Link>
-                    <Link to="/">Calendar</Link>
-                    <Link to="/">Donate</Link>
-                    <Link to="/aboutus">About Us</Link>
+                    <Link to="/calendar">Calendar</Link>
+                    <Link to="/donate">Donate</Link>
+                    <Link to="/about">About Us</Link>
                 </section>
             </div>
             )}
