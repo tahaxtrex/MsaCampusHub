@@ -18,13 +18,16 @@ export default function DonationForm() {
       return;
     }
 
-    setSubmitting(true)
+    setSubmitting(true);
     try {
-      const response = await axios.post("http://localhost:5000/donate_handle", {
-        amount: parseFloat(amount) * 100,
-        name: name,
-        email: email,
-      });
+      const response = await axios.post(
+        "http://localhost:8001/api/donate_handle",
+        {
+          amount: parseFloat(amount) * 100,
+          name: name,
+          email: email,
+        }
+      );
       const clientSecret = response.data.clientSecret; //secret token from BE
 
       const result = await stripe.confirmCardPayment(clientSecret, {
@@ -50,7 +53,7 @@ export default function DonationForm() {
       console.error("Error" + err);
       alert(err);
     }
-    setSubmitting(false)
+    setSubmitting(false);
   };
   return (
     <form className="rounded-xl" onSubmit={handleSubmit}>
@@ -99,13 +102,19 @@ export default function DonationForm() {
           onChange={(e) => setEmail(e.target.value)}
         />
       </div>
+      <div>
+        <label className="block font-semibold mb-2">Card Details</label>
+        <div className="border rounded-md p-3">
+          <CardElement />
+        </div>
+      </div>
 
       {/*Submit*/}
 
       <button
         type="submit"
         className="bg-green-700 text-white font-bold py-3 rounded-l"
-        disabled={!submitting || !stripe}
+        disabled={submitting || !stripe}
       >
         {submitting ? "Loading..." : "Donate Now!"}
       </button>
