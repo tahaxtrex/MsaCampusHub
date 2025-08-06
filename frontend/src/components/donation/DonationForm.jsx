@@ -56,7 +56,10 @@ export default function DonationForm() {
     setSubmitting(false);
   };
   return (
-    <form className="rounded-xl" onSubmit={handleSubmit}>
+    <form
+      className="max-w-xl mx-auto bg-white p-8 rounded-xl shadow space-y-6"
+      onSubmit={handleSubmit}
+    >
       <div>
         {/*for the amount selection */}
         <label>Select the amount</label>
@@ -66,7 +69,11 @@ export default function DonationForm() {
               key={val}
               type="button"
               onClick={() => setAmount(val)}
-              className="px-4 py-2 rounded-lg border"
+              className={`px-4 py-2 rounded-lg border font-semibold transition ${
+                parseFloat(amount) == val
+                  ? "bg-green-600 text-white border-green-600"
+                  : "bg-gray-100 text-gray-800"
+              }`}
             >
               €{val}
             </button>
@@ -78,6 +85,7 @@ export default function DonationForm() {
           placeholder="Custom amount"
           value={amount}
           onChange={(m) => setAmount(m.target.value)}
+          className="w-full border border-gray-300 px-4 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
         />
       </div>
 
@@ -89,6 +97,7 @@ export default function DonationForm() {
           required
           value={name}
           onChange={(e) => setName(e.target.value)}
+          className="w-full border border-gray-300 px-4 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
         />
       </div>
 
@@ -100,6 +109,7 @@ export default function DonationForm() {
           required
           value={email}
           onChange={(e) => setEmail(e.target.value)}
+          className="w-full border border-gray-300 px-4 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
         />
       </div>
       <div>
@@ -113,7 +123,11 @@ export default function DonationForm() {
 
       <button
         type="submit"
-        className="bg-green-700 text-white font-bold py-3 rounded-l"
+        className={`w-full text-white font-bold py-3 rounded-lg transition ${
+          submitting || !stripe
+            ? "bg-gray-400 cursor-not-allowed"
+            : "bg-green-700 hover:bg-green-800"
+        }`}
         disabled={submitting || !stripe}
       >
         {submitting ? "Loading..." : "Donate Now!"}
