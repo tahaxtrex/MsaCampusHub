@@ -33,7 +33,7 @@ app.use(session({
   cookie: {
     httpOnly: true,
     secure: process.env.NODE_ENV === 'production',
-    sameSite: 'None',
+    sameSite: 'lax',
     maxAge: 60 * 60 * 1000
   }
 }));
@@ -49,7 +49,7 @@ app.use('/', mainRoutes);
 
 
 try {
-    await connectDB();
+    // await connectDB();
     app.listen(PORT, ()=>{
     console.log("server is running on : " + PORT);
     })
