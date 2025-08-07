@@ -104,8 +104,6 @@ const NavBar = () => {
                         </>
                         )
                     }
-
-
                 </section>
             </div>
             )}
