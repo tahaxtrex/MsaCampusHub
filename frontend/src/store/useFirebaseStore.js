@@ -1,16 +1,15 @@
 import { create } from 'zustand';
 import { auth, db } from '../config/firebase.config';
 import { onAuthStateChanged } from 'firebase/auth';
-import { doc, getDoc} from 'firebase/firestore';
-
+import { doc, getDoc, setDoc } from 'firebase/firestore';
 
 export const useFirebaseStore = create((set) => ({
-  authUser: null,     // Stores user profile from Firestore
-  firebaseUser: null, // Raw Firebase user object (with token, etc.)
+  authUser: null,
+  firebaseUser: null,
   loading: true,
   error: null,
 
-  checkAuth: async () => {
+  checkAuth: () => {
     set({ loading: true, error: null });
 
     onAuthStateChanged(auth, async (firebaseUser) => {
@@ -23,10 +22,23 @@ export const useFirebaseStore = create((set) => ({
         const ref = doc(db, "users", firebaseUser.uid);
         const snap = await getDoc(ref);
 
+        // If profile doesn't exist, create it
         if (!snap.exists()) {
-          throw new Error("Profile not found in Firestore");
+          const defaultProfile = {
+            username: firebaseUser.displayName ?? "Anonymous",
+            email: firebaseUser.email,
+            createdAt: new Date(),
+          };
+          await setDoc(ref, defaultProfile);
+          set({
+            firebaseUser,
+            authUser: defaultProfile,
+            loading: false,
+          });
+          return;
         }
 
+        // Profile exists — normal flow
         set({
           firebaseUser,
           authUser: snap.data(),
