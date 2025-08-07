@@ -6,6 +6,7 @@ import authRoutes from "./routes/auth.routes.js"
 import {connectDB} from './lib/db.js'
 import session from 'express-session'
 import MongoStore from 'connect-mongo';
+import donationRoutes from "./routes/donation.routes.js";
 
 dotenv.config();
 const app = express();
@@ -44,6 +45,7 @@ app.use(cors({
 }));
 
 app.use('/api/auth', authRoutes);
+app.use("/api", donationRoutes); 
 app.use('/', mainRoutes);
 
 
