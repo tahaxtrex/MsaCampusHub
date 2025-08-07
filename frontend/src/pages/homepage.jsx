@@ -1,9 +1,30 @@
 import CurvedLoop from '../components/home/identity';
 import MsaCard from '../components/msacard';
 import { FaArrowDown } from "react-icons/fa";
+import GridMotion from '../components/home/gridmotion';
 
 
 function Home() {
+
+
+  const githubBase =
+    "https://raw.githubusercontent.com/tahaxtrex/Msa-images/26bc34b7f569f18d480d91a9f5bf54ff876e2743";
+
+  const imageNames = [
+    "DSC09676.JPG",
+    "amphi.JPG",
+    "bbq.JPG",
+    "bbq2.JPG",
+    "finaliftarMSAdenoiseed-78.JPG",
+    "khaoula%20nouha.JPG",
+    "men%20certificate.JPG",
+    "women%20amphi.JPG",
+  ];
+
+  // 🔁 Generate 28 image items by repeating the base list
+  const items = Array.from({ length: 22 }, (_, index) =>
+    `${githubBase}/${imageNames[index % imageNames.length]}`
+  );
 
 
   return (
@@ -27,6 +48,12 @@ function Home() {
           <p className="text-gray-600 text-sm mb-1">Learn more</p>
           <FaArrowDown className="mx-auto text-green-600 animate-bounce" />
         </div>
+
+      <div className='h-180'>
+        <GridMotion items={items} />
+      </div>
+      
+
 
       </main>
     </>
