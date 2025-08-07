@@ -91,8 +91,8 @@ function LoginCardFirebase() {
 
   return (
     <div className='flex justify-center items-center m-auto w-3xl'>
-      <div className='bg-green-600/45 flex flex-col gap-4 p-8 rounded-2xl shadow-md w-full items-center max-w-md mt-20'>
-        <h1 className='font-bold font-serif text-3xl text-green-900 '>LOGIN</h1>
+      <div className='bg-gray-50 flex flex-col gap-4 p-8 rounded-2xl shadow-md w-full items-center max-w-md mt-20'>
+        <h1 className='font-bold font-serif text-3xl text-green-700 '>LOGIN</h1>
 
         <form onSubmit={handleSubmit}>
           <div className='flex space-y-3 flex-col'>

@@ -95,8 +95,8 @@ function SignupCardFireBase() {
 
   return (
     <div className='flex justify-center items-center m-auto w-3xl'>
-      <div className='bg-green-600/45 flex flex-col gap-4 p-8 rounded-2xl shadow-md w-full items-center max-w-md mt-20'>
-        <h1 className='font-bold font-serif text-3xl text-green-900 '>SIGNUP NOW !</h1>
+      <div className='bg-gray-50 flex flex-col gap-4 p-8 rounded-2xl shadow-md w-full items-center max-w-md mt-20'>
+        <h1 className='font-bold font-serif text-3xl text-green-700 '>SIGNUP NOW !</h1>
 
         <form onSubmit={handleSubmit}>
           <div className='flex space-y-3 flex-col'>
@@ -112,7 +112,7 @@ function SignupCardFireBase() {
           </div>
 
           <div className='flex flex-row gap-3 mt-4'>
-            <button type='submit' className="btn btn-success w-full rounded-2xl border-green-800 shadow-2xl" disabled={isSigningUp}>
+            <button type='submit' className="btn btn-success w-full rounded-2xl border-green-700 shadow-2xl" disabled={isSigningUp}>
               Signup
               {isSigningUp && <Loader2 className="animate-spin ml-2" />}
             </button>

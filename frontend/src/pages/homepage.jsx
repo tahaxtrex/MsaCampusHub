@@ -11,13 +11,13 @@ function Home() {
     "https://raw.githubusercontent.com/tahaxtrex/Msa-images/26bc34b7f569f18d480d91a9f5bf54ff876e2743";
 
   const imageNames = [
-    "DSC09676.JPG",
     "amphi.JPG",
     "bbq.JPG",
+    "women%20amphi.JPG",
+    "men%20certificate.JPG",
     "bbq2.JPG",
     "finaliftarMSAdenoiseed-78.JPG",
     "khaoula%20nouha.JPG",
-    "men%20certificate.JPG",
     "women%20amphi.JPG",
   ];
 

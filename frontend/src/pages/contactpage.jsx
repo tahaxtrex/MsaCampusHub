@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Mail, MapPin, Send } from "lucide-react";
+import logo from '../assets/msapng.png'
 
 function ContactPage() {
   const [formData, setFormData] = useState({
@@ -42,7 +43,9 @@ function ContactPage() {
               <MapPin className="text-green-600" />
               <span>Bremen, Germany</span>
             </div>
-            {/* Add social links or phone if needed */}
+            <div className="flex items-center size-70">
+                <img src={logo} alt="msalogo" />
+            </div>
           </div>
 
           {/* Contact Form */}
