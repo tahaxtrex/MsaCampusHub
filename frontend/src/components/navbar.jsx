@@ -87,11 +87,25 @@ const NavBar = () => {
                     <Hamburger toggled={Menu} toggle={setMenu} color="white" />
                 </div>
                 <section className="font-medium font-mono font-stretch-50% flex flex-col gap-4 justify-around">
-                    <Link to="/">Home</Link>
-                    <Link to="/prayertime">Prayer Time</Link>
-                    <Link to="/calendar">Calendar</Link>
-                    <Link to="/donate">Donate</Link>
-                    <Link to="/about">About Us</Link>
+                    <a href="/">Home</a>
+                    <a href="/prayertime">Prayer Time</a>
+                    <a href="/calendar">Calendar</a>
+                    <a href="/donate">Donate</a>
+                    <a href="/about">About Us</a>
+                    <br /><br />
+                    {!authUser ? (
+                        <>
+                            <a href="/login">Login</a>
+                            <a href="/signup">Signup</a>
+                        </>
+                        ) : (
+                        <>
+                            <a href="/profile">Profile</a>
+                        </>
+                        )
+                    }
+
+
                 </section>
             </div>
             )}

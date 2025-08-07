@@ -4,8 +4,10 @@ import { Eye, EyeOff } from 'lucide-react';
 import { useState } from "react";
 import { Loader2 } from "lucide-react";
 import { Navigate } from "react-router";
-import { auth } from "../../../config/firebase.config.js";
-import { signInWithEmailAndPassword } from "firebase/auth";
+import { auth, db } from "../../../config/firebase.config.js";
+import { signInWithEmailAndPassword, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
+import { getDoc, setDoc, doc } from "firebase/firestore";
+import { FcGoogle } from "react-icons/fc";
 
 function LoginCardFirebase() {
 
@@ -47,6 +49,36 @@ function LoginCardFirebase() {
 
     } catch (err) {
       console.error("Login failed:", err);
+      // setError(err.message); for firebase error
+      setError("invalid creadentials, try again.")
+    } finally {
+      setIsLoggingIn(false);
+    }
+  };
+
+  const handleGoogleLogin = async () => {
+    setIsLoggingIn(true);
+    setError("");
+
+    try {
+      const userCredential = await signInWithPopup(auth, new GoogleAuthProvider());
+      const user = userCredential.user;
+
+      const userRef = doc(db, "users", user.uid);
+      const userSnap = await getDoc(userRef);
+
+      if (!userSnap.exists()) {
+        await setDoc(userRef, {
+          username: user.displayName ?? "Anonymous",
+          email: user.email,
+          createdAt: new Date()
+        });
+      }
+
+      setIsLoggedIn(true);
+
+    } catch (err) {
+      console.error("Google sign-in failed:", err);
       setError(err.message);
     } finally {
       setIsLoggingIn(false);
@@ -54,13 +86,13 @@ function LoginCardFirebase() {
   };
 
   if (isLoggedIn) {
-    return <Navigate to="/home" replace={true} />;
+    return <Navigate to="/home" replace />;
   }
 
   return (
     <div className='flex justify-center items-center m-auto w-3xl'>
-      <div className='bg-green-600/45 flex flex-col gap-4 p-8 rounded-2xl shadow-md w-full items-center max-w-md mt-20'>
-        <h1 className='font-bold font-serif text-3xl text-green-900 '>LOGIN</h1>
+      <div className='bg-gray-50 flex flex-col gap-4 p-8 rounded-2xl shadow-md w-full items-center max-w-md mt-20'>
+        <h1 className='font-bold font-serif text-3xl text-green-700 '>LOGIN</h1>
 
         <form onSubmit={handleSubmit}>
           <div className='flex space-y-3 flex-col'>
@@ -86,13 +118,24 @@ function LoginCardFirebase() {
               disabled={isLoggingIn}
             >
               Login
-              {isLoggingIn && <Loader2 className="animate-spin" />}
+              {isLoggingIn && <Loader2 className="animate-spin ml-2" />}
             </button>
           </div>
-
-          
-          {error && <p className="text-red-500">{error}</p>}
         </form>
+
+        <div className="w-full mt-4">
+          <button
+            type="button"
+            onClick={handleGoogleLogin}
+            className="flex items-center justify-center gap-2 w-full px-4 py-2 border border-gray-300 rounded-2xl shadow-md bg-white text-black hover:bg-gray-100"
+            disabled={isLoggingIn}
+          >
+            <FcGoogle size={20} />
+            Continue with Google
+          </button>
+        </div>
+
+        {error && <p className="text-red-500 mt-3">{error}</p>}
       </div>
     </div>
   );
