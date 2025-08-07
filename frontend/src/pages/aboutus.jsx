@@ -32,7 +32,7 @@ function AboutUs() {
       <div className="bg-white" style={{ backgroundColor: 'white', height: '600px', position: 'relative' }}>
         <StaffCard 
           items={items}
-          radius={300}
+          radius={100}
           damping={0.45}
           fadeOut={0.6}
           ease="power3.out"
