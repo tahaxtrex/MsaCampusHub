@@ -32,8 +32,10 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/home" element={<Home />} />
         <Route path="/prayertime" element={<Prayer />} />
-        <Route path="/aboutus" element={<AboutUs />} />
+        <Route path="/calendar" element={<Home />} />
+        <Route path="/about" element={<AboutUs />} />
         <Route path="/donate" element={<DonatePage />} />
+        <Route path="/contact" element={<ContactPage />} />
         <Route
           path="/signup"
           element={
