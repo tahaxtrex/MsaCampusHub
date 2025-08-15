@@ -1,16 +1,24 @@
-import DonationFrom from "../components/donation/DonationForm";
 import { Elements } from "@stripe/react-stripe-js";
 import { stripePromise } from "../lib/stripe";
+import DonationForm from "../components/donation/DonationForm";
 
 function DonatePage() {
   return (
-    <div className="text-center mb-8">
-      <h1 className="text-4xl font-bold text-center text-green-900 mb-4"> Financial Transactions to the MSA.</h1>
-      <h2 className="text-center text-gray-600 text-lg max-w-2xl mx-auto mb-10">Or support with us with a donation!</h2>
+    <div className="text-center px-4 py-12 bg-gray-50 min-h-screen">
+      <h1 className="text-5xl font-extrabold text-green-800 mb-4">Support the MSA Mission</h1>
+      <p className="text-lg text-gray-700 max-w-2xl mx-auto mb-8">
+        Help us continue organizing events and community initiatives by making a contribution below.
+      </p>
 
-      <Elements stripe={stripePromise}>
-        <DonationFrom />
-      </Elements>
+      <div className="max-w-2xl mx-auto bg-white shadow-xl rounded-xl p-6 border border-green-100">
+        <Elements stripe={stripePromise}>
+          <DonationForm />
+        </Elements>
+      </div>
+
+      <p className="text-sm text-gray-500 mt-6">
+        🔒 Your payment is secure and processed through Stripe.
+      </p>
     </div>
   );
 }
