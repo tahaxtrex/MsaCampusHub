@@ -39,8 +39,13 @@ app.use(session({
   }
 }));
 
+
 app.use(cors({
-  origin: "http://localhost:5173",
+  origin: [
+    "http://localhost:5173",              // local dev
+    "https://msacampushub.vercel.app"     // deployed frontend
+  ],
+  methods: ["GET", "POST", "PUT", "DELETE"],
   credentials: true
 }));
 
