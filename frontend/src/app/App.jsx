@@ -15,6 +15,7 @@ import PrivateRoute from "./private.routes.jsx";
 import PublicRoute from "./public.routes.jsx";
 import DonatePage from "../pages/donate.jsx";
 import ContactPage from "../pages/contactpage.jsx";
+import EventsPage from "../pages/calendarPage.jsx";
 
 function App() {
   const { checkAuth, authUser } = useFirebaseStore();
@@ -32,7 +33,7 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/home" element={<Home />} />
         <Route path="/prayertime" element={<Prayer />} />
-        <Route path="/calendar" element={<Home />} />
+        <Route path="/calendar" element={<EventsPage />} />
         <Route path="/about" element={<AboutUs />} />
         <Route path="/donate" element={<DonatePage />} />
         <Route path="/contact" element={<ContactPage />} />
