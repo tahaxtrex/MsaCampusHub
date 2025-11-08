@@ -3,7 +3,7 @@ import Calendar from '../components/calendar/calendar';
 import EventModal from '../components/calendar/eventmodal';
 import FilterBar from '../components/calendar/filterbar';
 import { getEvents, createEvent, updateEvent, deleteEvent } from '../services/eventService';
-
+import { useAuthStore } from '../store/useAuthStore';
 
 export default function EventsPage() {
   const [events, setEvents] = useState([]);
@@ -13,6 +13,7 @@ export default function EventsPage() {
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedEvent, setSelectedEvent] = useState(null);
   const [mode, setMode] = useState('view');
+  const { firebaseUser } = useAuthStore();
 
   useEffect(() => {
     async function loadEvents() {
@@ -80,7 +81,7 @@ export default function EventsPage() {
         }}
       />
 
-      <div className="mt-6">
+      {firebaseUser ? <div className="mt-6">
         <button
           onClick={() => {
             setSelectedEvent(null);
@@ -91,7 +92,7 @@ export default function EventsPage() {
         >
           + Add Event
         </button>
-      </div>
+      </div> : <div></div>}
 
       <EventModal
         isOpen={modalOpen}
