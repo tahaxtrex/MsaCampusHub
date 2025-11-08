@@ -1,35 +1,67 @@
 // src/components/Calendar.jsx
-import React from 'react';
 import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import listPlugin from '@fullcalendar/list';
 import interactionPlugin from '@fullcalendar/interaction';
 import { EventCategory } from '../../types';
+import React from 'react';
+import { useRef, useEffect } from 'react';
+
+
 
 function getEventColor(category) {
   switch (category) {
     case EventCategory.Religious:
-      return '#3b82f6'; // blue-500
+      return '#3b82f6';
     case EventCategory.Academic:
-      return '#6366f1'; // indigo-500
+      return '#6366f1';
     case EventCategory.Volunteering:
-      return '#22c55e'; // green-500
+      return '#22c55e';
     case EventCategory.Fundraising:
-      return '#f59e0b'; // amber-500
+      return '#f59e0b';
     case EventCategory.Social:
-      return '#ec4899'; // pink-500
+      return '#ec4899';
     case EventCategory.RamadanEid:
-      return '#8b5cf6'; // violet-500
+      return '#8b5cf6';
     default:
-      return '#6b7280'; // gray-500
+      return '#6b7280';
   }
 }
 
-/**
- * @param {{ events: import('../../types').MSAEvent[], onEventClick: (event: any) => void }} props
- */
-export default function Calendar({ events, onEventClick }) {
+export default function Calendar({ events, onEventClick, focusEventTitle }) {
+  const calendarRef = useRef(null);
+
+  // 🔍 whenever focusEventTitle changes, move to that event
+  useEffect(() => {
+    if (!focusEventTitle || !calendarRef.current) return;
+
+    const calendarApi = calendarRef.current.getApi();
+    const matchingEvents = calendarApi
+      .getEvents()
+      .filter((e) =>
+        e.title.toLowerCase().includes(focusEventTitle.toLowerCase())
+      );
+
+    if (matchingEvents.length === 1) {
+      // jump directly to that event’s date
+      calendarApi.gotoDate(matchingEvents[0].start);
+    } else if (matchingEvents.length > 1) {
+      // temporary highlight effect
+      matchingEvents.forEach((ev) => {
+        const el = calendarApi.getEventById(ev.id)?.el;
+        if (el) el.style.boxShadow = '0 0 8px 2px #3b82f6';
+      });
+
+      setTimeout(() => {
+        matchingEvents.forEach((ev) => {
+          const el = calendarApi.getEventById(ev.id)?.el;
+          if (el) el.style.boxShadow = '';
+        });
+      }, 2500);
+    }
+  }, [focusEventTitle]);
+
   const calendarEvents = events.map((event) => ({
     id: event.id,
     title: event.title,
@@ -42,15 +74,13 @@ export default function Calendar({ events, onEventClick }) {
   }));
 
   function handleEventClick(clickInfo) {
-    if (onEventClick) {
-      // TS did: clickInfo.event.extendedProps as MSAEvent
-      onEventClick(clickInfo.event.extendedProps);
-    }
+    if (onEventClick) onEventClick(clickInfo.event.extendedProps);
   }
 
   return (
     <div className="fc-wrapper">
       <FullCalendar
+        ref={calendarRef}
         plugins={[dayGridPlugin, timeGridPlugin, listPlugin, interactionPlugin]}
         initialView="dayGridMonth"
         headerToolbar={{

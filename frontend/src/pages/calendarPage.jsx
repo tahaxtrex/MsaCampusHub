@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import Calendar from '../components/calendar/calendar';
 import EventModal from '../components/calendar/eventmodal';
 import FilterBar from '../components/calendar/filterbar';
 import { getEvents, createEvent, updateEvent, deleteEvent } from '../services/eventService';
+
 
 export default function EventsPage() {
   const [events, setEvents] = useState([]);
@@ -13,7 +14,6 @@ export default function EventsPage() {
   const [selectedEvent, setSelectedEvent] = useState(null);
   const [mode, setMode] = useState('view');
 
-  // Load events once
   useEffect(() => {
     async function loadEvents() {
       const data = await getEvents();
@@ -23,31 +23,19 @@ export default function EventsPage() {
     loadEvents();
   }, []);
 
-  // Filtering logic
   useEffect(() => {
     let result = events;
-
-    if (selectedCategory) {
-      result = result.filter((ev) => ev.category === selectedCategory);
-    }
-
-    if (searchQuery.trim() !== '') {
-      const query = searchQuery.toLowerCase();
+    if (selectedCategory) result = result.filter((e) => e.category === selectedCategory);
+    if (searchQuery.trim()) {
+      const q = searchQuery.toLowerCase();
       result = result.filter(
-        (ev) =>
-          ev.title.toLowerCase().includes(query) ||
-          (ev.location && ev.location.toLowerCase().includes(query))
+        (e) =>
+          e.title.toLowerCase().includes(q) ||
+          (e.location && e.location.toLowerCase().includes(q))
       );
     }
-
     setFilteredEvents(result);
   }, [selectedCategory, searchQuery, events]);
-
-  function handleReset() {
-    setSelectedCategory(null);
-    setSearchQuery('');
-    setFilteredEvents(events);
-  }
 
   async function handleSave(formData) {
     if (mode === 'add') {
@@ -66,6 +54,12 @@ export default function EventsPage() {
     setModalOpen(false);
   }
 
+  function handleReset() {
+    setSelectedCategory(null);
+    setSearchQuery('');
+    setFilteredEvents(events);
+  }
+
   return (
     <div className="p-6 bg-gray-50 min-h-screen">
       <FilterBar
@@ -78,6 +72,7 @@ export default function EventsPage() {
 
       <Calendar
         events={filteredEvents}
+        focusEventTitle={searchQuery}
         onEventClick={(ev) => {
           setSelectedEvent(ev);
           setMode('view');
