@@ -41,6 +41,7 @@ export const useAuthStore = create((set) => ({
                 options: {
                     data: {
                         username: data.username,
+                        phone_number: data.phone_number,
                         avatar_url: "", // Default or random avatar could be set here
                     },
                 },
@@ -48,9 +49,6 @@ export const useAuthStore = create((set) => ({
 
             if (error) throw error;
             toast.success("Account created successfully! Please log in.");
-
-            // Auto login is handled by Supabase usually, but we might need to wait for session
-            // For now, let's just notify success.
 
         } catch (error) {
             console.error("Signup failed:", error);
@@ -87,6 +85,17 @@ export const useAuthStore = create((set) => ({
         }
     },
 
+    logout: async () => {
+        try {
+            await supabase.auth.signOut();
+            set({ authUser: null });
+            toast.success("Logged out successfully");
+        } catch (error) {
+            console.error("Logout failed:", error);
+            toast.error(error.message);
+        }
+    },
+
     updateProfilePicture: async (avatarUrl) => {
         try {
             const { data: { session } } = await supabase.auth.getSession();
@@ -114,14 +123,32 @@ export const useAuthStore = create((set) => ({
         }
     },
 
-    logout: async () => {
+    updateProfile: async (data) => {
         try {
-            await supabase.auth.signOut();
-            set({ authUser: null });
-            toast.success("Logged out successfully");
+            const { data: { session } } = await supabase.auth.getSession();
+            if (!session?.user) throw new Error("Not authenticated");
+
+            const { error } = await supabase
+                .from('profiles')
+                .update(data)
+                .eq('id', session.user.id);
+
+            if (error) throw error;
+
+            // Refresh auth user data
+            const { data: profile } = await supabase
+                .from('profiles')
+                .select('*')
+                .eq('id', session.user.id)
+                .single();
+
+            set({ authUser: { ...session.user, ...profile } });
+            toast.success("Profile updated successfully");
+            return true;
         } catch (error) {
-            console.error("Logout failed:", error);
-            toast.error(error.message);
+            console.error("Failed to update profile:", error);
+            toast.error(error.message || "Failed to update profile");
+            throw error;
         }
     },
 }));
