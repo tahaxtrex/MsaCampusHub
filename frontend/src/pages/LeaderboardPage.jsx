@@ -23,7 +23,7 @@ const LeaderboardPage = () => {
                 .from("profiles")
                 .select("username, fajr_points, avatar_url")
                 .order("fajr_points", { ascending: false })
-                .limit(10);
+                .limit(15);
 
             if (error) throw error;
             setLeaders(data);
