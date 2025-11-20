@@ -7,11 +7,12 @@ import mainRoutes from "./routes/main.routes.js"
 // import session from 'express-session' // Session removed
 // import MongoStore from 'connect-mongo'; // MongoStore removed
 import donationRoutes from "./routes/donation.routes.js";
+import eventRoutes from "./routes/event.routes.js";
 
 dotenv.config();
 const app = express();
 
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 8001;
 
 app.use(express.json())
 app.use(express.urlencoded({
@@ -32,6 +33,7 @@ app.use(cors({
 
 // app.use('/api/auth', authRoutes); // Auth handled by Supabase
 app.use("/api", donationRoutes);
+app.use("/api/events", eventRoutes);
 app.use('/', mainRoutes);
 
 try {

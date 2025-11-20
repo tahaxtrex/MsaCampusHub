@@ -103,6 +103,21 @@ export default function Calendar({ events, onEventClick, focusEventTitle }) {
           color: #111827;
         }
 
+        @media (max-width: 768px) {
+          .modern-calendar-wrapper .fc-toolbar-title {
+            font-size: 1rem !important;
+          }
+          .modern-calendar-wrapper .fc-toolbar {
+            flex-direction: column;
+            gap: 0.75rem;
+          }
+          .modern-calendar-wrapper .fc-toolbar-chunk {
+            display: flex;
+            justify-content: center;
+            width: 100%;
+          }
+        }
+
         .modern-calendar-wrapper .fc-button-primary {
           background-color: white !important;
           border-color: #e5e7eb !important;
@@ -165,11 +180,27 @@ export default function Calendar({ events, onEventClick, focusEventTitle }) {
         .fc-daygrid-event-dot {
           border-width: 3px !important;
         }
+
+        /* Mobile List View Optimizations */
+        .fc-list-event-dot {
+          border-width: 4px !important;
+        }
+        .fc-list-event-title {
+          font-weight: 600 !important;
+          color: #1f2937 !important;
+        }
+        .fc-list-event-time {
+          color: #6b7280 !important;
+          font-weight: 500 !important;
+        }
+        .fc-list-day-cushion {
+          background-color: #f9fafb !important;
+        }
       `}</style>
       <FullCalendar
         ref={calendarRef}
         plugins={[dayGridPlugin, timeGridPlugin, listPlugin, interactionPlugin]}
-        initialView="dayGridMonth"
+        initialView={window.innerWidth < 768 ? "listWeek" : "dayGridMonth"}
         headerToolbar={{
           left: 'prev,next today',
           center: 'title',
@@ -182,6 +213,8 @@ export default function Calendar({ events, onEventClick, focusEventTitle }) {
         windowResize={(arg) => {
           if (window.innerWidth < 768) {
             arg.view.calendar.changeView('listWeek');
+          } else {
+            arg.view.calendar.changeView('dayGridMonth');
           }
         }}
       />
