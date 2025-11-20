@@ -309,16 +309,25 @@ const AdminDashboard = () => {
         if (!window.confirm("Are you sure you want to delete this event?")) return;
 
         try {
-            const { error } = await supabase.from("events").delete().eq("id", id);
+            // Call Supabase RPC function with admin privileges
+            const { data, error } = await supabase.rpc('delete_event_admin', {
+                event_id_param: id
+            });
+
             if (error) throw error;
 
-            toast.success("Event deleted");
+            // Check if the function returned success
+            if (!data?.success) {
+                throw new Error(data?.message || "Failed to delete event");
+            }
+
+            toast.success("Event deleted successfully");
             fetchEvents();
             fetchStats();
             fetchVolunteers();
         } catch (error) {
             console.error("Error deleting event:", error);
-            toast.error("Failed to delete event");
+            toast.error(`Failed to delete event: ${error.message}`);
         }
     };
 
