@@ -1,16 +1,7 @@
 import React from 'react';
 import { EVENT_CATEGORIES } from '../../types';
+import { Search, X, Filter } from 'lucide-react';
 
-/**
- * A reusable filter and search bar for the MSA Event Calendar.
- * 
- * Props:
- *  - selectedCategory: string | null
- *  - onCategoryChange: function(category)
- *  - searchQuery: string
- *  - onSearchChange: function(query)
- *  - onReset: function()
- */
 export default function FilterBar({
   selectedCategory,
   onCategoryChange,
@@ -19,16 +10,20 @@ export default function FilterBar({
   onReset,
 }) {
   return (
-    <div className="flex flex-col md:flex-row items-center justify-between gap-3 bg-white shadow-sm rounded-lg p-4 mb-4">
+    <div className="flex flex-col md:flex-row items-center justify-between gap-4">
       {/* Category Filter */}
-      <div className="flex flex-wrap items-center gap-2">
+      <div className="flex flex-wrap items-center gap-2 w-full md:w-auto">
+        <div className="flex items-center gap-2 text-gray-500 mr-2">
+          <Filter className="w-4 h-4" />
+          <span className="text-sm font-medium">Filters:</span>
+        </div>
+
         <button
           onClick={() => onCategoryChange(null)}
-          className={`px-3 py-1.5 rounded-md border ${
-            selectedCategory === null
-              ? 'bg-blue-600 text-white border-blue-600'
-              : 'border-gray-300 text-gray-700 hover:bg-gray-100'
-          }`}
+          className={`px-4 py-1.5 rounded-full text-sm font-medium transition-all duration-200 ${selectedCategory === null
+              ? 'bg-gray-900 text-white shadow-md scale-105'
+              : 'bg-white text-gray-600 border border-gray-200 hover:bg-gray-50 hover:border-gray-300'
+            }`}
         >
           All
         </button>
@@ -37,11 +32,10 @@ export default function FilterBar({
           <button
             key={cat}
             onClick={() => onCategoryChange(cat)}
-            className={`px-3 py-1.5 rounded-md border ${
-              selectedCategory === cat
-                ? 'bg-blue-600 text-white border-blue-600'
-                : 'border-gray-300 text-gray-700 hover:bg-gray-100'
-            }`}
+            className={`px-4 py-1.5 rounded-full text-sm font-medium transition-all duration-200 ${selectedCategory === cat
+                ? 'bg-green-600 text-white shadow-md shadow-green-200 scale-105'
+                : 'bg-white text-gray-600 border border-gray-200 hover:bg-gray-50 hover:border-gray-300'
+              }`}
           >
             {cat}
           </button>
@@ -49,20 +43,25 @@ export default function FilterBar({
       </div>
 
       {/* Search Bar */}
-      <div className="flex items-center gap-2 w-full md:w-1/3">
+      <div className="relative w-full md:w-72 group">
+        <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+          <Search className="h-4 w-4 text-gray-400 group-focus-within:text-green-600 transition-colors" />
+        </div>
         <input
           type="text"
-          placeholder="Search by title or location..."
+          placeholder="Search events..."
           value={searchQuery}
           onChange={(e) => onSearchChange(e.target.value)}
-          className="flex-1 border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="block w-full pl-10 pr-10 py-2 border border-gray-200 rounded-xl leading-5 bg-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-green-500/20 focus:border-green-500 transition-all duration-200 sm:text-sm"
         />
-        <button
-          onClick={onReset}
-          className="px-3 py-2 rounded-md bg-gray-100 hover:bg-gray-200 text-gray-700"
-        >
-          Reset
-        </button>
+        {searchQuery && (
+          <button
+            onClick={onReset}
+            className="absolute inset-y-0 right-0 pr-3 flex items-center"
+          >
+            <X className="h-4 w-4 text-gray-400 hover:text-gray-600 cursor-pointer" />
+          </button>
+        )}
       </div>
     </div>
   );
