@@ -2,66 +2,44 @@ import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
 import mainRoutes from "./routes/main.routes.js"
-import authRoutes from "./routes/auth.routes.js"
-import {connectDB} from './lib/db.js'
-import session from 'express-session'
-import MongoStore from 'connect-mongo';
+// import authRoutes from "./routes/auth.routes.js" // Auth moved to Supabase
+// import {connectDB} from './lib/db.js' // Mongo removed
+// import session from 'express-session' // Session removed
+// import MongoStore from 'connect-mongo'; // MongoStore removed
 import donationRoutes from "./routes/donation.routes.js";
 
 dotenv.config();
 const app = express();
 
-const PORT = process.env.PORT
-
-
+const PORT = process.env.PORT || 5000;
 
 app.use(express.json())
 app.use(express.urlencoded({
-    extended:true
+  extended: true
 }));
 
-app.use(session({
-  secret: process.env.SECRET_SESSION,
-  store: MongoStore.create({
-    mongoUrl: process.env.MONGODB_URI,      
-    dbName: 'msa-session',
-    collectionName: 'sessions',
-    autoRemove: 'native',
-  }),
-  resave: false,
-  saveUninitialized: false,
-  rolling: true,
-  cookie: {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === 'production',
-    sameSite: 'lax',
-    maxAge: 60 * 60 * 1000
-  }
-}));
-
+// Session middleware removed as we use Supabase Auth on frontend
 
 app.use(cors({
   origin: [
     "http://localhost:5173",              // local dev
+    "http://localhost:5174",              // local dev (alternative port)
     "https://msacampushub.vercel.app"     // deployed frontend
   ],
   methods: ["GET", "POST", "PUT", "DELETE"],
   credentials: true
 }));
 
-app.use('/api/auth', authRoutes);
-app.use("/api", donationRoutes); 
+// app.use('/api/auth', authRoutes); // Auth handled by Supabase
+app.use("/api", donationRoutes);
 app.use('/', mainRoutes);
 
-
-
 try {
-    await connectDB();
-    app.listen(PORT, ()=>{
+  // await connectDB(); // No DB connection needed for now
+  app.listen(PORT, () => {
     console.log("server is running on : " + PORT);
-    })
-    
-} catch (error) {
-    console.log(error);
+  })
 
+} catch (error) {
+  console.log(error);
 }
