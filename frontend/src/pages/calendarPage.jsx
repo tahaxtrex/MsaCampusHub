@@ -1,11 +1,12 @@
 import { useState, useEffect } from 'react';
-import Calendar from '../components/calendar/calendar';
+import Timeline from '../components/calendar/timeline';
 import EventModal from '../components/calendar/eventmodal';
 import FilterBar from '../components/calendar/filterbar';
 import { getEvents, createEvent, updateEvent, deleteEvent, volunteerForEvent, isVolunteering } from '../services/eventService';
 import { useAuthStore } from '../store/useAuthStore';
 import toast from 'react-hot-toast';
 import { Calendar as CalendarIcon, Sparkles, Plus } from 'lucide-react';
+
 
 export default function EventsPage() {
   const [events, setEvents] = useState([]);
@@ -119,10 +120,10 @@ export default function EventsPage() {
           <div>
             <div className="flex items-center gap-2 text-green-600 mb-1">
               <CalendarIcon className="w-5 h-5" />
-              <span className="text-sm font-semibold uppercase tracking-wider">Community Calendar</span>
+              <span className="text-sm font-semibold uppercase tracking-wider">Events Timeline</span>
             </div>
-            <h1 className="text-3xl font-bold text-gray-900">Upcoming Events</h1>
-            <p className="text-gray-500 mt-1">Join us in our daily activities and gatherings</p>
+            <h1 className="text-3xl font-bold text-gray-900">All Events</h1>
+            <p className="text-gray-500 mt-1">Browse past and upcoming community events</p>
           </div>
 
           {authUser?.is_admin && (
@@ -153,7 +154,7 @@ export default function EventsPage() {
           </div>
 
           <div className="p-6">
-            <Calendar
+            <Timeline
               events={filteredEvents}
               focusEventTitle={searchQuery}
               onEventClick={(ev) => {
