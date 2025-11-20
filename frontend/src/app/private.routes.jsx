@@ -2,9 +2,17 @@ import { Navigate } from 'react-router-dom';
 import { useAuthStore } from '../store/useAuthStore';
 
 function PrivateRoute({ children }) {
-  const { firebaseUser } = useAuthStore();
+  const { authUser, isCheckingAuth } = useAuthStore();
 
-  return firebaseUser ? children : <Navigate to="/login" replace />;
+  if (isCheckingAuth) {
+    return (
+      <div className="flex items-center justify-center h-screen">
+        <span className="loading loading-spinner loading-lg text-green-500"></span>
+      </div>
+    );
+  }
+
+  return authUser ? children : <Navigate to="/login" replace />;
 }
 
 export default PrivateRoute;

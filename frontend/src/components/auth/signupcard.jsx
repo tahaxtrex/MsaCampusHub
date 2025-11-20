@@ -5,47 +5,56 @@ import { Eye, EyeOff } from 'lucide-react';
 import { useAuthStore } from "../../store/useAuthStore.js";
 import { useState, useEffect } from "react";
 import { Loader2 } from "lucide-react";
-import { Navigate } from "react-router";
+import { useNavigate } from "react-router-dom";
+import toast from 'react-hot-toast';
 
 
 function SignupCard() {
 
-    const [formData, setFormData] = useState({
-        username: "",
-        email: "",
-        password: "",
-    });
+  const [formData, setFormData] = useState({
+    username: "",
+    email: "",
+    password: "",
+  });
 
 
-    const [showPassword, setShowPassword] = useState(false);
-    const [isSignedUp, setisSignedUp] = useState(false);
-    const {signup, isSigninup, authUser} = useAuthStore();
+  const [showPassword, setShowPassword] = useState(false);
+  const { signup, isSigningUp, authUser } = useAuthStore();
+  const navigate = useNavigate();
 
-    const toggleShowPassword = ()=>{
-      setShowPassword(showPassword => !showPassword)
+  const toggleShowPassword = () => {
+    setShowPassword(showPassword => !showPassword)
+  }
+
+  useEffect(() => {
+    if (authUser) {
+      // Redirect to home after successful signup
+      navigate('/');
+    }
+  }, [authUser, navigate]);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    // Validate username
+    if (!formData.username || formData.username.trim().length < 3) {
+      toast.error("Username must be at least 3 characters");
+      return;
     }
 
-    useEffect(() => {
-      if (authUser) {
-        setisSignedUp(true);
-      }
-    }, [authUser]);
+    await signup(formData);
+    // Toast messages are handled in useAuthStore
+  }
 
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        console.log(formData)
-        signup(formData);  
-    }
+  const handleChange = (e) => {
+    const { name, value } = e.target;
 
-    const handleChange = (e) => {
-        const { name, value } = e.target;
-        
 
-        setFormData((prev) => ({
-        ...prev,
-        [name]: value,
-        }));
-    };
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
 
   return (
     <div className='flex justify-center items-center m-auto w-3xl'>
@@ -53,40 +62,42 @@ function SignupCard() {
         <h1 className='font-bold font-serif text-3xl text-green-900 '>SIGNUP NOW !</h1>
         <form onSubmit={handleSubmit}>
           <div className='flex space-y-3 flex-col'>
-            <Username onChange={handleChange} value={formData.username} name={"username"}/>
-            <Email onChange={handleChange} value={formData.email} name={"email"}/>
+            <Username onChange={handleChange} value={formData.username} name={"username"} />
+            <Email onChange={handleChange} value={formData.email} name={"email"} />
 
-            
+
             <div className='flex flex-row gap-2 items-center justify-center'>
-              <Password onChange={handleChange} value={formData.password} name={"password"} showpassword={showPassword}/>
-              
+              <Password onChange={handleChange} value={formData.password} name={"password"} showpassword={showPassword} />
+
               {showPassword ? <button type="button" onClick={toggleShowPassword} className='transition-all'>
-                <Eye size={18}/>
+                <Eye size={18} />
               </button> : <button type="button" onClick={toggleShowPassword}>
                 <EyeOff size={18} />
-              </button> }
+              </button>}
             </div>
-            
+
           </div>
           <br />
           <div className='flex flex-row gap-3 mt-4'>
-            <button type='submit' className="btn btn-success w-full rounded-2xl border-green-800 shadow-2xl" disabled={isSigninup}>Signup !</button>
+            <button type='submit' className="btn btn-success w-full rounded-2xl border-green-800 shadow-2xl" disabled={isSigningUp}>
+              {isSigningUp ? (
+                <span className="flex items-center gap-2">
+                  <Loader2 className="animate-spin" size={18} />
+                  Signing up...
+                </span>
+              ) : (
+                "Signup !"
+              )}
+            </button>
           </div>
-          {isSigninup ? (
-            <div className="flex justify-center mt-2">
-              <Loader2 className="animate-spin text-green-900" />
-            </div>
-          ) : (
-            <a href="/login" className="underline text-blue-900 mt-2">Login</a>
-          )}
+          <div className="text-center mt-4">
+            <span className="text-gray-700">Already have an account? </span>
+            <a href="/login" className="underline text-blue-900 font-semibold">Log in</a>
+          </div>
         </form>
 
-        
 
-        {
-          isSignedUp &&  <Navigate to="/home" replace={true} />
-        }
-        
+
       </div>
     </div>
   )
