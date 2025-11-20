@@ -12,34 +12,36 @@ export default function FilterBar({
   return (
     <div className="flex flex-col md:flex-row items-center justify-between gap-4">
       {/* Category Filter */}
-      <div className="flex flex-wrap items-center gap-2 w-full md:w-auto">
-        <div className="flex items-center gap-2 text-gray-500 mr-2">
-          <Filter className="w-4 h-4" />
-          <span className="text-sm font-medium">Filters:</span>
-        </div>
+      <div className="w-full md:w-auto overflow-x-auto pb-2 md:pb-0 -mx-4 px-4 md:mx-0 md:px-0 scrollbar-hide">
+        <div className="flex items-center gap-2 min-w-max">
+          <div className="hidden md:flex items-center gap-2 text-gray-500 mr-2">
+            <Filter className="w-4 h-4" />
+            <span className="text-sm font-medium">Filters:</span>
+          </div>
 
-        <button
-          onClick={() => onCategoryChange(null)}
-          className={`px-4 py-1.5 rounded-full text-sm font-medium transition-all duration-200 ${selectedCategory === null
+          <button
+            onClick={() => onCategoryChange(null)}
+            className={`px-4 py-1.5 rounded-full text-sm font-medium transition-all duration-200 whitespace-nowrap ${selectedCategory === null
               ? 'bg-gray-900 text-white shadow-md scale-105'
               : 'bg-white text-gray-600 border border-gray-200 hover:bg-gray-50 hover:border-gray-300'
-            }`}
-        >
-          All
-        </button>
-
-        {EVENT_CATEGORIES.map((cat) => (
-          <button
-            key={cat}
-            onClick={() => onCategoryChange(cat)}
-            className={`px-4 py-1.5 rounded-full text-sm font-medium transition-all duration-200 ${selectedCategory === cat
-                ? 'bg-green-600 text-white shadow-md shadow-green-200 scale-105'
-                : 'bg-white text-gray-600 border border-gray-200 hover:bg-gray-50 hover:border-gray-300'
               }`}
           >
-            {cat}
+            All
           </button>
-        ))}
+
+          {EVENT_CATEGORIES.map((cat) => (
+            <button
+              key={cat}
+              onClick={() => onCategoryChange(cat)}
+              className={`px-4 py-1.5 rounded-full text-sm font-medium transition-all duration-200 whitespace-nowrap ${selectedCategory === cat
+                ? 'bg-green-600 text-white shadow-md shadow-green-200 scale-105'
+                : 'bg-white text-gray-600 border border-gray-200 hover:bg-gray-50 hover:border-gray-300'
+                }`}
+            >
+              {cat}
+            </button>
+          ))}
+        </div>
       </div>
 
       {/* Search Bar */}

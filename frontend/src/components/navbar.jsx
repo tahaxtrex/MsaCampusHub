@@ -95,36 +95,45 @@ const NavBar = () => {
                 </div>
             </div>
             {Menu && (
-                <div className="fixed top-0 left-0 w-screen h-screen bg-green-600 z-50 text-white p-6 flex flex-col gap-6 transition-all overflow-y-auto">
-                    <div className="m-9">
-                        <Hamburger toggled={Menu} toggle={setMenu} color="white" />
+                <div className="fixed inset-0 z-50 flex flex-col bg-white/95 backdrop-blur-xl transition-all duration-300">
+                    <div className="flex justify-end p-6">
+                        <Hamburger toggled={Menu} toggle={setMenu} color="#166534" rounded />
                     </div>
-                    <section className="font-medium font-mono font-stretch-50% flex flex-col gap-4 justify-around">
-                        <a href="/" onClick={() => setMenu(false)}>Home</a>
-                        <a href="/prayertime" onClick={() => setMenu(false)}>Prayer Time</a>
-                        <a href="/calendar" onClick={() => setMenu(false)}>Calendar</a>
-                        <a href="/volunteer" onClick={() => setMenu(false)}>Volunteer</a>
-                        <a href="/leaderboard" onClick={() => setMenu(false)}>Leaderboard</a>
-                        <a href="/donate" onClick={() => setMenu(false)}>Donate</a>
-                        <a href="/about" onClick={() => setMenu(false)}>About Us</a>
-                        <br /><br />
-                        {!authUser ? (
-                            <>
-                                <a href="/login" onClick={() => setMenu(false)}>Login</a>
-                                <a href="/signup" onClick={() => setMenu(false)}>Signup</a>
-                            </>
-                        ) : (
-                            <>
-                                <a href="/profile" onClick={() => setMenu(false)}>Profile ({authUser.username})</a>
-                                {authUser.is_admin && (
-                                    <a href="/admin" className="text-yellow-300 font-semibold" onClick={() => setMenu(false)}>
-                                        Admin Dashboard
-                                    </a>
-                                )}
-                            </>
-                        )
-                        }
-                    </section>
+
+                    <div className="flex flex-col items-center justify-center flex-1 gap-8 pb-20">
+                        <div className="flex flex-col items-center gap-6 w-full px-8">
+                            <Link to="/" onClick={() => setMenu(false)} className="text-2xl font-medium text-gray-800 hover:text-green-600 transition-colors">Home</Link>
+                            <Link to="/prayertime" onClick={() => setMenu(false)} className="text-2xl font-medium text-gray-800 hover:text-green-600 transition-colors">Prayer Time</Link>
+                            <Link to="/calendar" onClick={() => setMenu(false)} className="text-2xl font-medium text-gray-800 hover:text-green-600 transition-colors">Calendar</Link>
+                            <Link to="/volunteer" onClick={() => setMenu(false)} className="text-2xl font-medium text-gray-800 hover:text-green-600 transition-colors">Volunteer</Link>
+                            <Link to="/leaderboard" onClick={() => setMenu(false)} className="text-2xl font-medium text-gray-800 hover:text-green-600 transition-colors">Leaderboard</Link>
+                            <Link to="/donate" onClick={() => setMenu(false)} className="text-2xl font-medium text-gray-800 hover:text-green-600 transition-colors">Donate</Link>
+                            <Link to="/about" onClick={() => setMenu(false)} className="text-2xl font-medium text-gray-800 hover:text-green-600 transition-colors">About Us</Link>
+                        </div>
+
+                        <div className="w-16 h-1 bg-green-100 rounded-full"></div>
+
+                        <div className="flex flex-col items-center gap-4">
+                            {!authUser ? (
+                                <>
+                                    <Link to="/login" onClick={() => setMenu(false)} className="px-8 py-3 text-lg font-semibold text-green-700 bg-green-50 rounded-xl w-64 text-center">Login</Link>
+                                    <Link to="/signup" onClick={() => setMenu(false)} className="px-8 py-3 text-lg font-semibold text-white bg-green-600 rounded-xl w-64 text-center shadow-lg shadow-green-200">Sign Up</Link>
+                                </>
+                            ) : (
+                                <>
+                                    <Link to="/profile" onClick={() => setMenu(false)} className="flex items-center gap-3 px-6 py-3 bg-gray-50 rounded-2xl border border-gray-100">
+                                        <img src={authUser?.avatar_url || "/user/user.png"} alt="Profile" className="w-10 h-10 rounded-full object-cover border-2 border-green-500" />
+                                        <span className="text-lg font-semibold text-gray-800">{authUser.username}</span>
+                                    </Link>
+                                    {authUser.is_admin && (
+                                        <Link to="/admin" onClick={() => setMenu(false)} className="text-yellow-600 font-semibold text-lg">
+                                            Admin Dashboard
+                                        </Link>
+                                    )}
+                                </>
+                            )}
+                        </div>
+                    </div>
                 </div>
             )}
         </>
