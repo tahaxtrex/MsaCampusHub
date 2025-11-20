@@ -5,6 +5,7 @@ import FilterBar from '../components/calendar/filterbar';
 import { getEvents, createEvent, updateEvent, deleteEvent, volunteerForEvent, isVolunteering } from '../services/eventService';
 import { useAuthStore } from '../store/useAuthStore';
 import toast from 'react-hot-toast';
+import { Calendar as CalendarIcon, Sparkles, Plus } from 'lucide-react';
 
 export default function EventsPage() {
   const [events, setEvents] = useState([]);
@@ -110,37 +111,60 @@ export default function EventsPage() {
   }
 
   return (
-    <div className="p-6 bg-gray-50 min-h-screen">
-      <FilterBar
-        selectedCategory={selectedCategory}
-        onCategoryChange={setSelectedCategory}
-        searchQuery={searchQuery}
-        onSearchChange={setSearchQuery}
-        onReset={handleReset}
-      />
+    <div className="min-h-screen bg-gray-50/50 py-8 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-7xl mx-auto space-y-6">
 
-      <Calendar
-        events={filteredEvents}
-        focusEventTitle={searchQuery}
-        onEventClick={(ev) => {
-          setSelectedEvent(ev);
-          setMode('view');
-          setModalOpen(true);
-        }}
-      />
+        {/* Header Section */}
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+          <div>
+            <div className="flex items-center gap-2 text-green-600 mb-1">
+              <CalendarIcon className="w-5 h-5" />
+              <span className="text-sm font-semibold uppercase tracking-wider">Community Calendar</span>
+            </div>
+            <h1 className="text-3xl font-bold text-gray-900">Upcoming Events</h1>
+            <p className="text-gray-500 mt-1">Join us in our daily activities and gatherings</p>
+          </div>
 
-      {authUser?.is_admin ? <div className="mt-6">
-        <button
-          onClick={() => {
-            setSelectedEvent(null);
-            setMode('add');
-            setModalOpen(true);
-          }}
-          className="px-5 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 shadow"
-        >
-          + Add Event
-        </button>
-      </div> : <div></div>}
+          {authUser?.is_admin && (
+            <button
+              onClick={() => {
+                setSelectedEvent(null);
+                setMode('add');
+                setModalOpen(true);
+              }}
+              className="inline-flex items-center gap-2 px-5 py-2.5 bg-green-600 text-white rounded-xl font-medium hover:bg-green-700 transition-all shadow-lg shadow-green-600/20 hover:shadow-green-600/30 active:scale-95"
+            >
+              <Plus className="w-5 h-5" />
+              Add New Event
+            </button>
+          )}
+        </div>
+
+        {/* Main Content */}
+        <div className="bg-white rounded-2xl shadow-xl shadow-gray-200/50 border border-gray-100 overflow-hidden">
+          <div className="p-6 border-b border-gray-100 bg-gray-50/30">
+            <FilterBar
+              selectedCategory={selectedCategory}
+              onCategoryChange={setSelectedCategory}
+              searchQuery={searchQuery}
+              onSearchChange={setSearchQuery}
+              onReset={handleReset}
+            />
+          </div>
+
+          <div className="p-6">
+            <Calendar
+              events={filteredEvents}
+              focusEventTitle={searchQuery}
+              onEventClick={(ev) => {
+                setSelectedEvent(ev);
+                setMode('view');
+                setModalOpen(true);
+              }}
+            />
+          </div>
+        </div>
+      </div>
 
       <EventModal
         isOpen={modalOpen}

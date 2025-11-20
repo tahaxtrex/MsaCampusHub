@@ -48,7 +48,7 @@ function LoginCard() {
   };
 
   return (
-    <div className='flex justify-center items-center m-auto w-3xl'>
+    <div className='flex justify-center items-center m-auto max-w-md w-full'>
       <div className='bg-green-600/45 flex flex-col gap-4 p-8 rounded-2xl shadow-md w-full items-center max-w-md mt-20'>
         <h1 className='font-bold font-serif text-3xl text-green-900 '>Login NOW !</h1>
         <form onSubmit={handleSubmit}>
