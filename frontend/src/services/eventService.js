@@ -1,5 +1,5 @@
 // src/services/eventService.js
-import { supabase } from './supabase';
+import { supabase } from '../lib/supabase';
 
 const TABLE_NAME = 'events';
 
@@ -9,28 +9,25 @@ function fromSupabase(row) {
   return {
     id: row.id,
     title: row.title,
-    start: row.start_time,
-    end: row.end_time,
-    category: row.category,
+    start: row.date, // Calendar expects 'start'
+    end: row.date,   // For single day events
+    category: row.type,
     location: row.location || '',
     description: row.description || '',
-    organizer: row.organizer || '',
-    image_url: row.image_url || '',
-    allDay: row.all_day || false,
+    max_volunteers: row.max_volunteers || 0,
+    created_by: row.created_by,
+    allDay: false,
   };
 }
 
 function toSupabase(event) {
   return {
     title: event.title,
-    start_time: event.start,
-    end_time: event.end,
-    category: event.category,
+    date: event.start, // Calendar sends 'start'
     location: event.location || null,
     description: event.description || null,
-    organizer: event.organizer || null,
-    image_url: event.image_url || null,
-    all_day: event.allDay || false,
+    type: event.category || 'social',
+    max_volunteers: event.max_volunteers || 0,
   };
 }
 
@@ -38,7 +35,7 @@ export async function getEvents() {
   const { data, error } = await supabase
     .from(TABLE_NAME)
     .select('*')
-    .order('start_time', { ascending: true });
+    .order('date', { ascending: true });
 
   if (error) {
     console.error('Error fetching events:', error);
@@ -50,6 +47,10 @@ export async function getEvents() {
 
 export async function createEvent(event) {
   const payload = toSupabase(event);
+
+  // Get current user for created_by
+  const { data: { user } } = await supabase.auth.getUser();
+  if (user) payload.created_by = user.id;
 
   const { data, error } = await supabase
     .from(TABLE_NAME)
@@ -93,4 +94,34 @@ export async function deleteEvent(id) {
     console.error('Error deleting event:', error);
     throw error;
   }
+}
+
+export async function volunteerForEvent(eventId, userId) {
+  const { error } = await supabase
+    .from('event_volunteers')
+    .insert([{ event_id: eventId, user_id: userId }]);
+
+  if (error) throw error;
+}
+
+export async function getVolunteerCount(eventId) {
+  const { count, error } = await supabase
+    .from('event_volunteers')
+    .select('*', { count: 'exact', head: true })
+    .eq('event_id', eventId);
+
+  if (error) throw error;
+  return count;
+}
+
+export async function isVolunteering(eventId, userId) {
+  const { data, error } = await supabase
+    .from('event_volunteers')
+    .select('*')
+    .eq('event_id', eventId)
+    .eq('user_id', userId)
+    .single();
+
+  if (error && error.code !== 'PGRST116') throw error; // PGRST116 is 'no rows returned'
+  return !!data;
 }

@@ -12,7 +12,7 @@ import { EventCategory, EVENT_CATEGORIES } from '../../types';
  *  - onSave: function(eventData) → save or update event
  *  - onDelete: function(eventId) → delete event
  */
-export default function EventModal({ isOpen, mode, event, onClose, onSave, onDelete }) {
+export default function EventModal({ isOpen, mode, event, onClose, onSave, onDelete, onVolunteer, isVolunteering }) {
   const [form, setForm] = useState({
     title: '',
     start: '',
@@ -22,6 +22,7 @@ export default function EventModal({ isOpen, mode, event, onClose, onSave, onDel
     description: '',
     organizer: '',
     allDay: false,
+    max_volunteers: 0,
   });
 
   useEffect(() => {
@@ -35,6 +36,7 @@ export default function EventModal({ isOpen, mode, event, onClose, onSave, onDel
         description: event.description || '',
         organizer: event.organizer || '',
         allDay: event.allDay || false,
+        max_volunteers: event.max_volunteers || 0,
       });
     } else {
       setForm({
@@ -46,6 +48,7 @@ export default function EventModal({ isOpen, mode, event, onClose, onSave, onDel
         description: '',
         organizer: '',
         allDay: false,
+        max_volunteers: 0,
       });
     }
   }, [event, isOpen]);
@@ -143,16 +146,18 @@ export default function EventModal({ isOpen, mode, event, onClose, onSave, onDel
             />
           </div>
 
-          <div>
-            <label className="block text-sm font-medium text-gray-700">Organizer</label>
-            <input
-              name="organizer"
-              value={form.organizer}
-              onChange={handleChange}
-              disabled={mode === 'view'}
-              className="mt-1 block w-full border rounded-md px-3 py-2"
-            />
-          </div>
+          {mode !== 'view' && (
+            <div>
+              <label className="block text-sm font-medium text-gray-700">Max Volunteers</label>
+              <input
+                type="number"
+                name="max_volunteers"
+                value={form.max_volunteers}
+                onChange={handleChange}
+                className="mt-1 block w-full border rounded-md px-3 py-2"
+              />
+            </div>
+          )}
 
           <div>
             <label className="block text-sm font-medium text-gray-700">Description</label>
@@ -178,6 +183,17 @@ export default function EventModal({ isOpen, mode, event, onClose, onSave, onDel
           </div>
 
           <div className="flex justify-end gap-3 mt-4">
+            {mode === 'view' && onVolunteer && (
+              <button
+                type="button"
+                onClick={() => onVolunteer(event.id)}
+                disabled={isVolunteering}
+                className={`px-4 py-2 rounded-md text-white ${isVolunteering ? 'bg-green-600 cursor-default' : 'bg-blue-600 hover:bg-blue-700'}`}
+              >
+                {isVolunteering ? 'Volunteered ✅' : 'Volunteer'}
+              </button>
+            )}
+
             <button
               type="button"
               onClick={onClose}

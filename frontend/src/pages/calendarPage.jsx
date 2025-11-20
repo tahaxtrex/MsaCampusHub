@@ -2,8 +2,9 @@ import { useState, useEffect } from 'react';
 import Calendar from '../components/calendar/calendar';
 import EventModal from '../components/calendar/eventmodal';
 import FilterBar from '../components/calendar/filterbar';
-import { getEvents, createEvent, updateEvent, deleteEvent } from '../services/eventService';
+import { getEvents, createEvent, updateEvent, deleteEvent, volunteerForEvent, isVolunteering } from '../services/eventService';
 import { useAuthStore } from '../store/useAuthStore';
+import toast from 'react-hot-toast';
 
 export default function EventsPage() {
   const [events, setEvents] = useState([]);
@@ -13,16 +14,18 @@ export default function EventsPage() {
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedEvent, setSelectedEvent] = useState(null);
   const [mode, setMode] = useState('view');
-  const { firebaseUser } = useAuthStore();
+  const [isUserVolunteering, setIsUserVolunteering] = useState(false);
+  const { authUser } = useAuthStore();
 
   useEffect(() => {
-    async function loadEvents() {
-      const data = await getEvents();
-      setEvents(data);
-      setFilteredEvents(data);
-    }
     loadEvents();
   }, []);
+
+  async function loadEvents() {
+    const data = await getEvents();
+    setEvents(data);
+    setFilteredEvents(data);
+  }
 
   useEffect(() => {
     let result = events;
@@ -38,21 +41,66 @@ export default function EventsPage() {
     setFilteredEvents(result);
   }, [selectedCategory, searchQuery, events]);
 
-  async function handleSave(formData) {
-    if (mode === 'add') {
-      const newEvent = await createEvent(formData);
-      setEvents((prev) => [...prev, newEvent]);
-    } else if (mode === 'edit') {
-      const updated = await updateEvent(selectedEvent.id, formData);
-      setEvents((prev) => prev.map((e) => (e.id === selectedEvent.id ? updated : e)));
+  // Check if user is volunteering when event is selected
+  useEffect(() => {
+    if (selectedEvent && authUser) {
+      checkVolunteeringStatus(selectedEvent.id);
+    } else {
+      setIsUserVolunteering(false);
     }
-    setModalOpen(false);
+  }, [selectedEvent, authUser]);
+
+  async function checkVolunteeringStatus(eventId) {
+    try {
+      const status = await isVolunteering(eventId, authUser.id);
+      setIsUserVolunteering(status);
+    } catch (error) {
+      console.error("Error checking volunteer status:", error);
+    }
+  }
+
+  async function handleSave(formData) {
+    try {
+      if (mode === 'add') {
+        const newEvent = await createEvent(formData);
+        setEvents((prev) => [...prev, newEvent]);
+        toast.success("Event created!");
+      } else if (mode === 'edit') {
+        const updated = await updateEvent(selectedEvent.id, formData);
+        setEvents((prev) => prev.map((e) => (e.id === selectedEvent.id ? updated : e)));
+        toast.success("Event updated!");
+      }
+      setModalOpen(false);
+    } catch (error) {
+      toast.error("Failed to save event");
+    }
   }
 
   async function handleDelete(id) {
-    await deleteEvent(id);
-    setEvents((prev) => prev.filter((e) => e.id !== id));
-    setModalOpen(false);
+    if (!window.confirm("Are you sure?")) return;
+    try {
+      await deleteEvent(id);
+      setEvents((prev) => prev.filter((e) => e.id !== id));
+      setModalOpen(false);
+      toast.success("Event deleted!");
+    } catch (error) {
+      toast.error("Failed to delete event");
+    }
+  }
+
+  async function handleVolunteer(eventId) {
+    if (!authUser) {
+      toast.error("Please login to volunteer");
+      return;
+    }
+    try {
+      await volunteerForEvent(eventId, authUser.id);
+      setIsUserVolunteering(true);
+      toast.success("Successfully volunteered!");
+    } catch (error) {
+      console.error("Volunteer error:", error);
+      toast.error("Failed to volunteer (maybe already signed up?)");
+    }
   }
 
   function handleReset() {
@@ -81,7 +129,7 @@ export default function EventsPage() {
         }}
       />
 
-      {firebaseUser ? <div className="mt-6">
+      {authUser?.is_admin ? <div className="mt-6">
         <button
           onClick={() => {
             setSelectedEvent(null);
@@ -101,6 +149,8 @@ export default function EventsPage() {
         onClose={() => setModalOpen(false)}
         onSave={handleSave}
         onDelete={handleDelete}
+        onVolunteer={handleVolunteer}
+        isVolunteering={isUserVolunteering}
       />
     </div>
   );

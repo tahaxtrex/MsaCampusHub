@@ -10,7 +10,7 @@ This project is designed to be scalable and customizable for any university or o
 Category Features
 🕌 Prayer Times Automatically updated daily prayer schedule based on location, with countdown timer and optional Adhan audio notifications
 
-📅 Events Page: Upcoming events with RSVP capability, date/time/location info, and volunteer roles for each activity
+📅 Events Page: Upcoming events with RSVP capability, date/time/location info, and volunteer roles for each activity, admin can change the events and add new events 
 
 📢 Announcements: Admin-controlled news feed for important updates (e.g., prayer room changes, event delays, reminders)
 
@@ -18,11 +18,8 @@ Category Features
 
 💸 Donations: Secure integration with PayPal or Stripe for collecting community donations, with donation goals and campaign info
 
-📸 Media Gallery: Image and video galleries from past events, categorized by year or theme
-
 ✍️ Community: Blog Long-form posts and event reflections written by students; supports markdown and rich formatting
 
-💬 Forum: Threaded discussion boards for faith Q&A, event planning, and casual community discussions — with login required to participate
 
 📚 Islamic Learning : A learning hub with embedded videos, PDF resources, curated playlists, and basic Islamic educational materials
 
