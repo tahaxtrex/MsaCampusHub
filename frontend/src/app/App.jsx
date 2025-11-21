@@ -19,6 +19,7 @@ import EventsPage from "../pages/calendarPage.jsx";
 import LeaderboardPage from "../pages/LeaderboardPage.jsx";
 import AdminDashboard from "../pages/AdminDashboard.jsx";
 import VolunteerPage from "../pages/VolunteerPage.jsx";
+import MSAIPage from "../pages/MSAIPage.jsx";
 
 function App() {
   const { checkAuth, authUser } = useAuthStore();
@@ -39,6 +40,7 @@ function App() {
         <Route path="/calendar" element={<EventsPage />} />
         <Route path="/volunteer" element={<VolunteerPage />} />
         <Route path="/leaderboard" element={<LeaderboardPage />} />
+        <Route path="/msai" element={<MSAIPage />} />
         <Route path="/admin" element={<AdminDashboard />} />
         <Route path="/about" element={<AboutUs />} />
         <Route path="/donate" element={<DonatePage />} />

@@ -42,6 +42,9 @@ const NavBar = () => {
                             <Link to={"/leaderboard"} className={navproperties}>Leaderboard</Link>
                         </div>
                         <div>
+                            <Link to={"/msai"} className={navproperties}>MSAI</Link>
+                        </div>
+                        <div>
                             <Link to={"/donate"} className={navproperties}>Donate</Link>
                         </div>
                         <div>
@@ -107,6 +110,7 @@ const NavBar = () => {
                             <Link to="/calendar" onClick={() => setMenu(false)} className="text-2xl font-medium text-gray-800 hover:text-green-600 transition-colors">Calendar</Link>
                             <Link to="/volunteer" onClick={() => setMenu(false)} className="text-2xl font-medium text-gray-800 hover:text-green-600 transition-colors">Volunteer</Link>
                             <Link to="/leaderboard" onClick={() => setMenu(false)} className="text-2xl font-medium text-gray-800 hover:text-green-600 transition-colors">Leaderboard</Link>
+                            <Link to="/msai" onClick={() => setMenu(false)} className="text-2xl font-medium text-gray-800 hover:text-green-600 transition-colors">MSAI</Link>
                             <Link to="/donate" onClick={() => setMenu(false)} className="text-2xl font-medium text-gray-800 hover:text-green-600 transition-colors">Donate</Link>
                             <Link to="/about" onClick={() => setMenu(false)} className="text-2xl font-medium text-gray-800 hover:text-green-600 transition-colors">About Us</Link>
                         </div>
