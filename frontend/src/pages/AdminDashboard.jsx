@@ -343,15 +343,16 @@ const AdminDashboard = () => {
     }
 
     return (
-        <div className="min-h-screen bg-gray-50 py-8 px-4 sm:px-6 lg:px-8">
+        <div className="min-h-screen bg-gray-50 py-4 sm:py-8 px-4 sm:px-6 lg:px-8">
             <div className="max-w-7xl mx-auto">
-                <div className="flex justify-between items-center mb-8">
-                    <h1 className="text-3xl font-bold text-gray-900">Admin Dashboard</h1>
+                {/* Header - Stack on mobile */}
+                <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6 sm:mb-8">
+                    <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">Admin Dashboard</h1>
                     <button
                         onClick={() => setShowCreateModal(true)}
-                        className="btn btn-primary flex items-center gap-2"
+                        className="btn btn-primary flex items-center gap-2 w-full sm:w-auto justify-center"
                     >
-                        <Plus size={20} /> Create Event
+                        <Plus size={20} /> <span className="sm:inline">Create Event</span>
                     </button>
                 </div>
 
@@ -392,11 +393,11 @@ const AdminDashboard = () => {
                     </div>
                 </div>
 
-                {/* Tabs */}
-                <div className="flex gap-4 mb-6">
+                {/* Tabs - Scrollable on mobile */}
+                <div className="flex gap-2 sm:gap-4 mb-6 overflow-x-auto pb-2">
                     <button
                         onClick={() => setActiveTab('events')}
-                        className={`px-4 py-2 rounded-lg font-medium ${activeTab === 'events'
+                        className={`px-3 sm:px-4 py-2 rounded-lg font-medium whitespace-nowrap text-sm sm:text-base ${activeTab === 'events'
                             ? 'bg-blue-600 text-white'
                             : 'bg-white text-gray-600 hover:bg-gray-100'
                             }`}
@@ -405,7 +406,7 @@ const AdminDashboard = () => {
                     </button>
                     <button
                         onClick={() => setActiveTab('volunteers')}
-                        className={`px-4 py-2 rounded-lg font-medium ${activeTab === 'volunteers'
+                        className={`px-3 sm:px-4 py-2 rounded-lg font-medium whitespace-nowrap text-sm sm:text-base ${activeTab === 'volunteers'
                             ? 'bg-blue-600 text-white'
                             : 'bg-white text-gray-600 hover:bg-gray-100'
                             }`}
@@ -426,44 +427,50 @@ const AdminDashboard = () => {
                         ) : (
                             <div className="divide-y divide-gray-100">
                                 {events.map((event) => (
-                                    <div key={event.id} className="p-6 flex items-center justify-between hover:bg-gray-50">
-                                        <div className="flex-1">
-                                            <h3 className="font-semibold text-gray-900">{event.title}</h3>
-                                            <div className="flex items-center gap-4 mt-1 text-sm text-gray-500">
-                                                <span className="flex items-center gap-1">
-                                                    <Calendar size={14} />
-                                                    {new Date(event.date).toLocaleDateString()}
-                                                </span>
-                                                <span className="flex items-center gap-1">
-                                                    <Clock size={14} />
-                                                    {new Date(event.date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                                                </span>
-                                                <span className="flex items-center gap-1">
-                                                    <MapPin size={14} />
-                                                    {event.location}
-                                                </span>
+                                    <div key={event.id} className="p-4 sm:p-6 hover:bg-gray-50">
+                                        {/* Stack on mobile, side-by-side on larger screens */}
+                                        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4">
+                                            <div className="flex-1">
+                                                <h3 className="font-semibold text-gray-900 mb-2">{event.title}</h3>
+                                                <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 text-sm text-gray-500">
+                                                    <span className="flex items-center gap-1">
+                                                        <Calendar size={14} />
+                                                        {new Date(event.date).toLocaleDateString()}
+                                                    </span>
+                                                    <span className="flex items-center gap-1">
+                                                        <Clock size={14} />
+                                                        {new Date(event.date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                                                    </span>
+                                                    <span className="flex items-center gap-1">
+                                                        <MapPin size={14} />
+                                                        <span className="truncate">{event.location}</span>
+                                                    </span>
+                                                </div>
                                             </div>
-                                        </div>
-                                        <div className="flex items-center gap-4">
-                                            <button
-                                                onClick={() => fetchEventVolunteers(event.id, event.title)}
-                                                className="text-sm text-blue-600 hover:text-blue-800 flex items-center gap-1"
-                                            >
-                                                <UserCheck size={16} />
-                                                {eventVolunteerCounts[event.id] || 0} Volunteers
-                                            </button>
-                                            <button
-                                                onClick={() => openEditModal(event)}
-                                                className="text-gray-600 hover:text-blue-600"
-                                            >
-                                                <Edit2 size={18} />
-                                            </button>
-                                            <button
-                                                onClick={() => handleDeleteEvent(event.id)}
-                                                className="text-gray-600 hover:text-red-600"
-                                            >
-                                                <Trash2 size={18} />
-                                            </button>
+                                            {/* Action buttons - wrap on mobile */}
+                                            <div className="flex items-center gap-3 sm:gap-4 flex-wrap sm:flex-nowrap">
+                                                <button
+                                                    onClick={() => fetchEventVolunteers(event.id, event.title)}
+                                                    className="text-xs sm:text-sm text-blue-600 hover:text-blue-800 flex items-center gap-1"
+                                                >
+                                                    <UserCheck size={16} />
+                                                    {eventVolunteerCounts[event.id] || 0} Volunteers
+                                                </button>
+                                                <button
+                                                    onClick={() => openEditModal(event)}
+                                                    className="p-2 text-gray-600 hover:text-blue-600 hover:bg-blue-50 rounded"
+                                                    aria-label="Edit event"
+                                                >
+                                                    <Edit2 size={18} />
+                                                </button>
+                                                <button
+                                                    onClick={() => handleDeleteEvent(event.id)}
+                                                    className="p-2 text-gray-600 hover:text-red-600 hover:bg-red-50 rounded"
+                                                    aria-label="Delete event"
+                                                >
+                                                    <Trash2 size={18} />
+                                                </button>
+                                            </div>
                                         </div>
                                     </div>
                                 ))}
@@ -483,44 +490,44 @@ const AdminDashboard = () => {
                             <table className="w-full">
                                 <thead className="bg-gray-50 border-b border-gray-100">
                                     <tr>
-                                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Volunteer</th>
-                                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Event</th>
-                                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Contact</th>
-                                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Registered</th>
+                                        <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Volunteer</th>
+                                        <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Event</th>
+                                        <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Contact</th>
+                                        <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Registered</th>
                                     </tr>
                                 </thead>
                                 <tbody className="divide-y divide-gray-100">
                                     {volunteers.map((vol) => (
                                         <tr key={vol.id} className="hover:bg-gray-50">
-                                            <td className="px-6 py-4 whitespace-nowrap">
+                                            <td className="px-3 sm:px-6 py-4 whitespace-nowrap">
                                                 <div className="flex items-center gap-2">
-                                                    <User size={16} className="text-gray-400" />
+                                                    <User size={16} className="text-gray-400 flex-shrink-0" />
                                                     <span className="text-sm font-medium text-gray-900">
                                                         {vol.profiles?.username || 'Unknown'}
                                                     </span>
                                                 </div>
                                             </td>
-                                            <td className="px-6 py-4">
+                                            <td className="px-3 sm:px-6 py-4">
                                                 <div className="text-sm text-gray-900">{vol.events?.title}</div>
                                                 <div className="text-xs text-gray-500">
                                                     {new Date(vol.events?.date).toLocaleDateString()}
                                                 </div>
                                             </td>
-                                            <td className="px-6 py-4">
+                                            <td className="px-3 sm:px-6 py-4">
                                                 <div className="flex flex-col gap-1">
                                                     <div className="flex items-center gap-2 text-sm text-gray-900">
-                                                        <Mail size={14} className="text-gray-400" />
-                                                        {vol.profiles?.email}
+                                                        <Mail size={14} className="text-gray-400 flex-shrink-0" />
+                                                        <span className="truncate max-w-[150px] sm:max-w-none">{vol.profiles?.email}</span>
                                                     </div>
                                                     {vol.profiles?.phone_number && (
                                                         <div className="flex items-center gap-2 text-sm text-gray-900">
-                                                            <Phone size={14} className="text-gray-400" />
+                                                            <Phone size={14} className="text-gray-400 flex-shrink-0" />
                                                             {vol.profiles?.phone_number}
                                                         </div>
                                                     )}
                                                 </div>
                                             </td>
-                                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                            <td className="px-3 sm:px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                                                 {new Date(vol.volunteered_at).toLocaleDateString()}
                                             </td>
                                         </tr>
@@ -541,9 +548,9 @@ const AdminDashboard = () => {
 
             {/* Create Event Modal */}
             {showCreateModal && (
-                <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-                    <div className="bg-white rounded-2xl w-full max-w-md p-6 shadow-2xl">
-                        <h2 className="text-xl font-bold mb-4">Create New Event</h2>
+                <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4 overflow-y-auto">
+                    <div className="bg-white rounded-2xl w-full max-w-md p-4 sm:p-6 shadow-2xl my-8">
+                        <h2 className="text-lg sm:text-xl font-bold mb-4">Create New Event</h2>
                         <form onSubmit={handleCreateEvent} className="space-y-4">
                             <div>
                                 <label className="block text-sm font-medium text-gray-700 mb-1">Title</label>
@@ -644,9 +651,9 @@ const AdminDashboard = () => {
 
             {/* Edit Event Modal */}
             {showEditModal && editingEvent && (
-                <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-                    <div className="bg-white rounded-2xl w-full max-w-md p-6 shadow-2xl">
-                        <h2 className="text-xl font-bold mb-4">Edit Event</h2>
+                <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4 overflow-y-auto">
+                    <div className="bg-white rounded-2xl w-full max-w-md p-4 sm:p-6 shadow-2xl my-8">
+                        <h2 className="text-lg sm:text-xl font-bold mb-4">Edit Event</h2>
                         <form onSubmit={handleEditEvent} className="space-y-4">
                             <div>
                                 <label className="block text-sm font-medium text-gray-700 mb-1">Title</label>
@@ -751,7 +758,7 @@ const AdminDashboard = () => {
             {/* Users List Modal */}
             {showUsersModal && (
                 <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-                    <div className="bg-white rounded-2xl w-full max-w-4xl p-6 shadow-2xl max-h-[80vh] overflow-y-auto">
+                    <div className="bg-white rounded-2xl w-full max-w-4xl p-4 sm:p-6 shadow-2xl max-h-[85vh] overflow-y-auto">
                         <div className="flex justify-between items-center mb-4">
                             <h2 className="text-xl font-bold">All Users ({allUsers.length})</h2>
                             <button
@@ -765,19 +772,19 @@ const AdminDashboard = () => {
                             <table className="w-full">
                                 <thead className="bg-gray-50 border-b border-gray-100">
                                     <tr>
-                                        <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Username</th>
-                                        <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Email</th>
-                                        <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Phone</th>
-                                        <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Joined</th>
+                                        <th className="px-2 sm:px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Username</th>
+                                        <th className="px-2 sm:px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Email</th>
+                                        <th className="px-2 sm:px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase hidden sm:table-cell">Phone</th>
+                                        <th className="px-2 sm:px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase hidden sm:table-cell">Joined</th>
                                     </tr>
                                 </thead>
                                 <tbody className="divide-y divide-gray-100">
                                     {allUsers.map((user) => (
                                         <tr key={user.id} className="hover:bg-gray-50">
-                                            <td className="px-4 py-3 text-sm text-gray-900">{user.username || 'No username'}</td>
-                                            <td className="px-4 py-3 text-sm text-gray-600">{user.email}</td>
-                                            <td className="px-4 py-3 text-sm text-gray-600">{user.phone_number || 'N/A'}</td>
-                                            <td className="px-4 py-3 text-sm text-gray-600">
+                                            <td className="px-2 sm:px-4 py-3 text-sm text-gray-900">{user.username || 'No username'}</td>
+                                            <td className="px-2 sm:px-4 py-3 text-sm text-gray-600 truncate max-w-[150px] sm:max-w-none">{user.email}</td>
+                                            <td className="px-2 sm:px-4 py-3 text-sm text-gray-600 hidden sm:table-cell">{user.phone_number || 'N/A'}</td>
+                                            <td className="px-2 sm:px-4 py-3 text-sm text-gray-600 hidden sm:table-cell">
                                                 {new Date(user.created_at).toLocaleDateString()}
                                             </td>
                                         </tr>
@@ -792,8 +799,8 @@ const AdminDashboard = () => {
             {/* Event Volunteers Modal */}
             {showEventVolunteersModal && (
                 <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-                    <div className="bg-white rounded-2xl w-full max-w-3xl p-6 shadow-2xl max-h-[80vh] overflow-y-auto">
-                        <div className="flex justify-between items-center mb-4">
+                    <div className="bg-white rounded-2xl w-full max-w-3xl p-4 sm:p-6 shadow-2xl max-h-[85vh] overflow-y-auto">
+                        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 mb-4">
                             <h2 className="text-xl font-bold">Volunteers for "{selectedEventTitle}"</h2>
                             <button
                                 onClick={() => setShowEventVolunteersModal(false)}
@@ -809,21 +816,21 @@ const AdminDashboard = () => {
                                 <table className="w-full">
                                     <thead className="bg-gray-50 border-b border-gray-100">
                                         <tr>
-                                            <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Name</th>
-                                            <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Email</th>
-                                            <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Phone</th>
-                                            <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Registered</th>
+                                            <th className="px-2 sm:px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Name</th>
+                                            <th className="px-2 sm:px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Email</th>
+                                            <th className="px-2 sm:px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase hidden sm:table-cell">Phone</th>
+                                            <th className="px-2 sm:px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase hidden sm:table-cell">Registered</th>
                                         </tr>
                                     </thead>
                                     <tbody className="divide-y divide-gray-100">
                                         {selectedEventVolunteers.map((vol) => (
                                             <tr key={vol.id} className="hover:bg-gray-50">
-                                                <td className="px-4 py-3 text-sm text-gray-900">
+                                                <td className="px-2 sm:px-4 py-3 text-sm text-gray-900">
                                                     {vol.profile?.username || 'Unknown'}
                                                 </td>
-                                                <td className="px-4 py-3 text-sm text-gray-600">{vol.profile?.email || 'N/A'}</td>
-                                                <td className="px-4 py-3 text-sm text-gray-600">{vol.profile?.phone_number || 'N/A'}</td>
-                                                <td className="px-4 py-3 text-sm text-gray-600">
+                                                <td className="px-2 sm:px-4 py-3 text-sm text-gray-600 truncate max-w-[150px] sm:max-w-none">{vol.profile?.email || 'N/A'}</td>
+                                                <td className="px-2 sm:px-4 py-3 text-sm text-gray-600 hidden sm:table-cell">{vol.profile?.phone_number || 'N/A'}</td>
+                                                <td className="px-2 sm:px-4 py-3 text-sm text-gray-600 hidden sm:table-cell">
                                                     {new Date(vol.created_at).toLocaleDateString()}
                                                 </td>
                                             </tr>
