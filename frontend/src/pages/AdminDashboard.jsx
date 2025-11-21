@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { supabase } from "../lib/supabase";
 import { useAuthStore } from "../store/useAuthStore";
-import { Users, Calendar, UserCheck, Plus, Trash2, MapPin, Clock, Edit2, Phone, Mail, User } from "lucide-react";
+import { Users, Calendar, UserCheck, Plus, Trash2, MapPin, Clock, Edit2, Phone, Mail, User, Search } from "lucide-react";
 import toast from "react-hot-toast";
 
 const AdminDashboard = () => {
@@ -22,6 +22,7 @@ const AdminDashboard = () => {
     const [selectedEventVolunteers, setSelectedEventVolunteers] = useState([]);
     const [selectedEventTitle, setSelectedEventTitle] = useState('');
     const [eventVolunteerCounts, setEventVolunteerCounts] = useState({});
+    const [eventSearchQuery, setEventSearchQuery] = useState('');
 
     const [newEvent, setNewEvent] = useState({
         title: "",
@@ -98,11 +99,13 @@ const AdminDashboard = () => {
             console.log("Event IDs:", eventIds);
             console.log("User IDs:", userIds);
 
-            // Fetch events
+            // Fetch only upcoming events (exclude past events)
+            const currentDate = new Date().toISOString();
             const { data: eventsData, error: eventsError } = await supabase
                 .from("events")
                 .select("id, title, date")
-                .in("id", eventIds);
+                .in("id", eventIds)
+                .gte("date", currentDate);
 
             if (eventsError) {
                 console.error("Error fetching events:", eventsError);
@@ -135,15 +138,17 @@ const AdminDashboard = () => {
                 profilesMap[profile.id] = profile;
             });
 
-            // Join the data manually
-            const joinedData = volunteersData.map(volunteer => ({
-                id: volunteer.id,
-                volunteered_at: volunteer.created_at,  // Map created_at to volunteered_at for display
-                event_id: volunteer.event_id,
-                user_id: volunteer.user_id,
-                events: eventsMap[volunteer.event_id] || null,
-                profiles: profilesMap[volunteer.user_id] || null
-            }));
+            // Join the data manually (only for volunteers with upcoming events)
+            const joinedData = volunteersData
+                .filter(volunteer => eventsMap[volunteer.event_id])
+                .map(volunteer => ({
+                    id: volunteer.id,
+                    volunteered_at: volunteer.created_at,
+                    event_id: volunteer.event_id,
+                    user_id: volunteer.user_id,
+                    events: eventsMap[volunteer.event_id],
+                    profiles: profilesMap[volunteer.user_id] || null
+                }));
 
             console.log("Joined volunteer data:", joinedData);
             setVolunteers(joinedData);
@@ -419,61 +424,79 @@ const AdminDashboard = () => {
                 {activeTab === 'events' && (
                     <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
                         <div className="px-6 py-4 border-b border-gray-100">
-                            <h2 className="text-lg font-semibold text-gray-900">Manage Events</h2>
+                            <h2 className="text-lg font-semibold text-gray-900 mb-3">Manage Events</h2>
+                            <div className="relative">
+                                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
+                                <input
+                                    type="text"
+                                    placeholder="Search events by title, location, or type..."
+                                    value={eventSearchQuery}
+                                    onChange={(e) => setEventSearchQuery(e.target.value)}
+                                    className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
+                                />
+                            </div>
                         </div>
 
                         {loading ? (
                             <div className="p-8 text-center text-gray-500">Loading events...</div>
                         ) : (
                             <div className="divide-y divide-gray-100">
-                                {events.map((event) => (
-                                    <div key={event.id} className="p-4 sm:p-6 hover:bg-gray-50">
-                                        {/* Stack on mobile, side-by-side on larger screens */}
-                                        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4">
-                                            <div className="flex-1">
-                                                <h3 className="font-semibold text-gray-900 mb-2">{event.title}</h3>
-                                                <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 text-sm text-gray-500">
-                                                    <span className="flex items-center gap-1">
-                                                        <Calendar size={14} />
-                                                        {new Date(event.date).toLocaleDateString()}
-                                                    </span>
-                                                    <span className="flex items-center gap-1">
-                                                        <Clock size={14} />
-                                                        {new Date(event.date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                                                    </span>
-                                                    <span className="flex items-center gap-1">
-                                                        <MapPin size={14} />
-                                                        <span className="truncate">{event.location}</span>
-                                                    </span>
+                                {events
+                                    .filter(event => {
+                                        if (!eventSearchQuery) return true;
+                                        const query = eventSearchQuery.toLowerCase();
+                                        return event.title.toLowerCase().includes(query) ||
+                                            event.location.toLowerCase().includes(query) ||
+                                            event.type.toLowerCase().includes(query);
+                                    })
+                                    .map((event) => (
+                                        <div key={event.id} className="p-4 sm:p-6 hover:bg-gray-50">
+                                            {/* Stack on mobile, side-by-side on larger screens */}
+                                            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4">
+                                                <div className="flex-1">
+                                                    <h3 className="font-semibold text-gray-900 mb-2">{event.title}</h3>
+                                                    <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 text-sm text-gray-500">
+                                                        <span className="flex items-center gap-1">
+                                                            <Calendar size={14} />
+                                                            {new Date(event.date).toLocaleDateString()}
+                                                        </span>
+                                                        <span className="flex items-center gap-1">
+                                                            <Clock size={14} />
+                                                            {new Date(event.date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                                                        </span>
+                                                        <span className="flex items-center gap-1">
+                                                            <MapPin size={14} />
+                                                            <span className="truncate">{event.location}</span>
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                                {/* Action buttons - wrap on mobile */}
+                                                <div className="flex items-center gap-3 sm:gap-4 flex-wrap sm:flex-nowrap">
+                                                    <button
+                                                        onClick={() => fetchEventVolunteers(event.id, event.title)}
+                                                        className="text-xs sm:text-sm text-blue-600 hover:text-blue-800 flex items-center gap-1"
+                                                    >
+                                                        <UserCheck size={16} />
+                                                        {eventVolunteerCounts[event.id] || 0} Volunteers
+                                                    </button>
+                                                    <button
+                                                        onClick={() => openEditModal(event)}
+                                                        className="p-2 text-gray-600 hover:text-blue-600 hover:bg-blue-50 rounded"
+                                                        aria-label="Edit event"
+                                                    >
+                                                        <Edit2 size={18} />
+                                                    </button>
+                                                    <button
+                                                        onClick={() => handleDeleteEvent(event.id)}
+                                                        className="p-2 text-gray-600 hover:text-red-600 hover:bg-red-50 rounded"
+                                                        aria-label="Delete event"
+                                                    >
+                                                        <Trash2 size={18} />
+                                                    </button>
                                                 </div>
                                             </div>
-                                            {/* Action buttons - wrap on mobile */}
-                                            <div className="flex items-center gap-3 sm:gap-4 flex-wrap sm:flex-nowrap">
-                                                <button
-                                                    onClick={() => fetchEventVolunteers(event.id, event.title)}
-                                                    className="text-xs sm:text-sm text-blue-600 hover:text-blue-800 flex items-center gap-1"
-                                                >
-                                                    <UserCheck size={16} />
-                                                    {eventVolunteerCounts[event.id] || 0} Volunteers
-                                                </button>
-                                                <button
-                                                    onClick={() => openEditModal(event)}
-                                                    className="p-2 text-gray-600 hover:text-blue-600 hover:bg-blue-50 rounded"
-                                                    aria-label="Edit event"
-                                                >
-                                                    <Edit2 size={18} />
-                                                </button>
-                                                <button
-                                                    onClick={() => handleDeleteEvent(event.id)}
-                                                    className="p-2 text-gray-600 hover:text-red-600 hover:bg-red-50 rounded"
-                                                    aria-label="Delete event"
-                                                >
-                                                    <Trash2 size={18} />
-                                                </button>
-                                            </div>
                                         </div>
-                                    </div>
-                                ))}
+                                    ))}
                             </div>
                         )}
                     </div>
