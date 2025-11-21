@@ -1,25 +1,20 @@
 import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
-import mainRoutes from "./routes/main.routes.js"
-// import authRoutes from "./routes/auth.routes.js" // Auth moved to Supabase
-// import {connectDB} from './lib/db.js' // Mongo removed
-// import session from 'express-session' // Session removed
-// import MongoStore from 'connect-mongo'; // MongoStore removed
+import mainRoutes from "./routes/main.routes.js";
 import donationRoutes from "./routes/donation.routes.js";
 import eventRoutes from "./routes/event.routes.js";
+import msaiRoutes from "./routes/msai.routes.js";
 
 dotenv.config();
 const app = express();
 
 const PORT = process.env.PORT || 8001;
 
-app.use(express.json())
+app.use(express.json());
 app.use(express.urlencoded({
   extended: true
 }));
-
-// Session middleware removed as we use Supabase Auth on frontend
 
 app.use(cors({
   origin: [
@@ -31,13 +26,12 @@ app.use(cors({
   credentials: true
 }));
 
-// app.use('/api/auth', authRoutes); // Auth handled by Supabase
 app.use("/api", donationRoutes);
 app.use("/api/events", eventRoutes);
+app.use("/api/msai", msaiRoutes);
 app.use('/', mainRoutes);
 
 try {
-  // await connectDB(); // No DB connection needed for now
   app.listen(PORT, () => {
     console.log("server is running on : " + PORT);
   })
