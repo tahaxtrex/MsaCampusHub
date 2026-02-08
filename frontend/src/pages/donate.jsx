@@ -1,5 +1,3 @@
-import { Elements } from "@stripe/react-stripe-js";
-import { stripePromise } from "../lib/stripe";
 import DonationForm from "../components/donation/DonationForm";
 
 function DonatePage() {
@@ -11,13 +9,11 @@ function DonatePage() {
       </p>
 
       <div className="max-w-2xl mx-auto bg-white shadow-xl rounded-xl p-6 border border-green-100">
-        <Elements stripe={stripePromise}>
-          <DonationForm />
-        </Elements>
+        <DonationForm />
       </div>
 
       <p className="text-sm text-gray-500 mt-6">
-        🔒 Your payment is secure and processed through Stripe.
+        🔒 Your payment is secure and processed through trusted payment providers.
       </p>
     </div>
   );
