@@ -1,11 +1,11 @@
-import Email from '../../auth/email.jsx';
-import Password from '../../auth/password.jsx';
-import Username from '../../auth/username.jsx';
+import Email from '../../../frontend/src/components/auth/email.jsx';
+import Password from '../../../frontend/src/components/auth/password.jsx';
+import Username from '../../../frontend/src/components/auth/username.jsx';
 import { Eye, EyeOff } from 'lucide-react';
 import { useState } from "react";
 import { Loader2 } from "lucide-react";
 import { Navigate } from "react-router";
-import { auth, db } from "../../../config/firebase.config.js";
+import { auth, db } from "../../../frontend/src/config/firebase.config.js";
 import { createUserWithEmailAndPassword, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
 import { doc, setDoc, getDoc } from "firebase/firestore";
 import { FcGoogle } from "react-icons/fc"; // Google icon
