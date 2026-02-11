@@ -3,8 +3,13 @@ import { FaPaypal, FaCopy, FaUniversity } from "react-icons/fa";
 import { SiRevolut } from "react-icons/si";
 
 export default function DonationForm() {
-  const available_amounts = [10, 20, 50, 100];
-  const [selectedAmount, setSelectedAmount] = useState(20);
+  const donation_options = [
+    { amount: 15, description: "Feed 1 Student 🍲" },
+    { amount: 45, description: "Feed 3 Students 🥘" },
+    { amount: 150, description: "Feed 10 Students 🚀" },
+    { amount: 450, description: "Sponsor 30 Students (20% of Iftar) 🌙" },
+  ];
+  const [selectedAmount, setSelectedAmount] = useState(15);
   const [customAmount, setCustomAmount] = useState("");
   const [copied, setCopied] = useState(false);
 
@@ -45,22 +50,27 @@ export default function DonationForm() {
         <label className="block font-semibold text-gray-700 mb-3 text-lg">
           Select Donation Amount
         </label>
-        <div className="flex flex-wrap justify-center gap-3 mb-4">
-          {available_amounts.map((val) => (
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
+          {donation_options.map((option) => (
             <button
-              key={val}
+              key={option.amount}
               type="button"
               onClick={() => {
-                setSelectedAmount(val);
+                setSelectedAmount(option.amount);
                 setCustomAmount("");
               }}
-              className={`px-6 py-3 rounded-lg border-2 transition-all duration-200 font-bold text-lg shadow-sm hover:shadow-md ${
-                selectedAmount === val && !customAmount
-                  ? "bg-green-600 text-white border-green-700 scale-105"
-                  : "bg-white text-gray-700 border-gray-300 hover:border-green-400"
+              className={`flex flex-col items-center justify-center p-4 rounded-xl border-2 transition-all duration-200 shadow-sm hover:shadow-md h-full ${
+                selectedAmount === option.amount && !customAmount
+                  ? "bg-green-600 text-white border-green-700 scale-105 shadow-lg"
+                  : "bg-white text-gray-700 border-gray-200 hover:border-green-400 hover:bg-green-50"
               }`}
             >
-              €{val}
+              <span className="text-2xl font-bold mb-1">€{option.amount}</span>
+              <span className={`text-sm font-medium text-center leading-tight ${
+                selectedAmount === option.amount && !customAmount ? "text-green-100" : "text-gray-500"
+              }`}>
+                {option.description}
+              </span>
             </button>
           ))}
         </div>
