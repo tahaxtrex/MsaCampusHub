@@ -7,7 +7,7 @@ export default function DonationForm() {
     { amount: 15, description: "Feed 1 Student 🍲" },
     { amount: 45, description: "Feed 3 Students 🥘" },
     { amount: 150, description: "Feed 10 Students 🚀" },
-    { amount: 450, description: "Sponsor 30 Students (20% of Iftar) 🌙" },
+    { amount: 3000, description: "Sponsor a full Iftar! (+150 Students) 🌙" },
   ];
   const [selectedAmount, setSelectedAmount] = useState(15);
   const [customAmount, setCustomAmount] = useState("");
