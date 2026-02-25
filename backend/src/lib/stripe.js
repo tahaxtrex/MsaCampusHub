@@ -1,6 +1,2 @@
-import Stripe from 'stripe';
-import dotenv from 'dotenv';
-dotenv.config();
-
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
-export default stripe;
+// Stripe has been removed — payments are handled via PayPal and Revolut redirects.
+// This file is kept as a placeholder in case Stripe is needed in the future.
