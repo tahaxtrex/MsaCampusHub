@@ -1,12 +1,12 @@
+import 'dotenv/config'; // MUST be first — loads .env before any other module initializes
 import express from "express";
 import cors from "cors";
-import dotenv from "dotenv";
 import mainRoutes from "./routes/main.routes.js";
 import donationRoutes from "./routes/donation.routes.js";
 import eventRoutes from "./routes/event.routes.js";
 import msaiRoutes from "./routes/msai.routes.js";
+import iftarTicketRoutes from "./routes/iftarTicket.routes.js";
 
-dotenv.config();
 const app = express();
 
 const PORT = process.env.PORT || 8001;
@@ -29,6 +29,7 @@ app.use(cors({
 app.use("/api", donationRoutes);
 app.use("/api/events", eventRoutes);
 app.use("/api/msai", msaiRoutes);
+app.use("/api/iftar-tickets", iftarTicketRoutes);
 app.use('/', mainRoutes);
 
 try {

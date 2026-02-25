@@ -1,24 +1,6 @@
-import stripe from "../lib/stripe.js";
+// Stripe has been removed — payments are handled via PayPal and Revolut redirects on the frontend.
+// This file is kept as a placeholder.
 
 export const createDonationIntent = async (req, res) => {
-  const { amount, name, email } = req.body;
-
-  try {
-    const paymentIntent = await stripe.paymentIntents.create({
-      amount: amount,
-      currency: "eur",
-      metadata: {
-        name,
-        email,
-      },
-    });
-
-    res.status(200).json({
-      clientSecret: paymentIntent.client_secret,
-    });
-  } catch (error) {
-    alert(error)
-    console.error("Error: " + error)
-    res.status(500).json({ error: "Stripe PaymentIntent creation failed" });
-  }
+  return res.status(410).json({ message: "Stripe integration is no longer used. Use PayPal or Revolut." });
 };

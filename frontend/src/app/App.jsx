@@ -20,6 +20,7 @@ import LeaderboardPage from "../pages/LeaderboardPage.jsx";
 import AdminDashboard from "../pages/AdminDashboard.jsx";
 import VolunteerPage from "../pages/VolunteerPage.jsx";
 import MSAIPage from "../pages/MSAIPage.jsx";
+import IftarTicketPage from "../pages/IftarTicketPage.jsx";
 
 function App() {
   const { checkAuth, authUser } = useAuthStore();
@@ -45,6 +46,7 @@ function App() {
         <Route path="/about" element={<AboutUs />} />
         <Route path="/donate" element={<DonatePage />} />
         <Route path="/contact" element={<ContactPage />} />
+        <Route path="/iftar-tickets" element={<IftarTicketPage />} />
         <Route
           path="/signup"
           element={
