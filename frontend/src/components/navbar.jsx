@@ -38,14 +38,22 @@ const NavBar = () => {
                         <div>
                             <Link to={"/volunteer"} className={navproperties}>Volunteer</Link>
                         </div>
-                        <div>
+                        {/* <div>
                             <Link to={"/leaderboard"} className={navproperties}>Leaderboard</Link>
                         </div>
                         <div>
                             <Link to={"/msai"} className={navproperties}>MSAI</Link>
-                        </div>
+                        </div> */}
                         <div>
                             <Link to={"/donate"} className={navproperties}>Donate</Link>
+                        </div>
+                        <div>
+                            <Link
+                                to={"/iftar-tickets"}
+                                className="p-4 hover:text-shadow-2xs text-amber-700 font-semibold"
+                            >
+                                🌙 Iftar Tickets
+                            </Link>
                         </div>
                         <div>
                             <Link to={"/about"} className={navproperties}>About us</Link>
@@ -112,6 +120,13 @@ const NavBar = () => {
                             <Link to="/leaderboard" onClick={() => setMenu(false)} className="text-2xl font-medium text-gray-800 hover:text-green-600 transition-colors">Leaderboard</Link>
                             <Link to="/msai" onClick={() => setMenu(false)} className="text-2xl font-medium text-gray-800 hover:text-green-600 transition-colors">MSAI</Link>
                             <Link to="/donate" onClick={() => setMenu(false)} className="text-2xl font-medium text-gray-800 hover:text-green-600 transition-colors">Donate</Link>
+                            <Link
+                                to="/iftar-tickets"
+                                onClick={() => setMenu(false)}
+                                className="text-2xl font-semibold text-amber-700 hover:text-amber-900 transition-colors"
+                            >
+                                🌙 Iftar Tickets
+                            </Link>
                             <Link to="/about" onClick={() => setMenu(false)} className="text-2xl font-medium text-gray-800 hover:text-green-600 transition-colors">About Us</Link>
                         </div>
 

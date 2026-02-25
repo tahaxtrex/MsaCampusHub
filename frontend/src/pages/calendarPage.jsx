@@ -1,11 +1,12 @@
 import { useState, useEffect } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import Timeline from '../components/calendar/timeline';
 import EventModal from '../components/calendar/eventmodal';
 import FilterBar from '../components/calendar/filterbar';
 import { getEvents, createEvent, updateEvent, deleteEvent, volunteerForEvent, isVolunteering } from '../services/eventService';
 import { useAuthStore } from '../store/useAuthStore';
 import toast from 'react-hot-toast';
-import { Calendar as CalendarIcon, Sparkles, Plus } from 'lucide-react';
+import { Calendar as CalendarIcon, Sparkles, Plus, Ticket } from 'lucide-react';
 
 
 export default function EventsPage() {
@@ -18,6 +19,7 @@ export default function EventsPage() {
   const [mode, setMode] = useState('view');
   const [isUserVolunteering, setIsUserVolunteering] = useState(false);
   const { authUser } = useAuthStore();
+  const navigate = useNavigate();
 
   useEffect(() => {
     loadEvents();
@@ -93,6 +95,7 @@ export default function EventsPage() {
   async function handleVolunteer(eventId) {
     if (!authUser) {
       toast.error("Please login to volunteer");
+      navigate('/login');
       return;
     }
     try {
@@ -114,6 +117,26 @@ export default function EventsPage() {
   return (
     <div className="min-h-screen bg-gray-50/50 py-8 px-4 sm:px-6 lg:px-8">
       <div className="max-w-7xl mx-auto space-y-6">
+
+        {/* Iftar Tickets Banner — show until March 7, 2026 */}
+        {new Date() < new Date('2026-03-08') && (
+          <div className="flex items-center justify-between bg-gradient-to-r from-green-800 to-green-700 text-white px-6 py-4 rounded-2xl shadow-lg">
+            <div className="flex items-center gap-3">
+              <span className="text-2xl">🌙</span>
+              <div>
+                <p className="font-bold text-base">MSA Iftar Dinner — March 7, 2026</p>
+                <p className="text-green-200 text-sm">Limited seats · €5/ticket</p>
+              </div>
+            </div>
+            <Link
+              to="/iftar-tickets"
+              className="flex items-center gap-2 bg-amber-400 hover:bg-amber-300 text-green-900 font-bold text-sm px-5 py-2.5 rounded-xl transition-all hover:scale-105 flex-shrink-0"
+            >
+              <Ticket className="w-4 h-4" />
+              Get Tickets
+            </Link>
+          </div>
+        )}
 
         {/* Header Section */}
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white p-6 rounded-2xl shadow-sm border border-gray-100">

@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { Calendar, Users, BookOpen, ArrowRight, Sparkles } from 'lucide-react';
+import { Calendar, Users, BookOpen, ArrowRight, Sparkles, Ticket } from 'lucide-react';
 import logo from '../assets/msapng.png';
 
 function Home() {
@@ -123,6 +123,37 @@ function Home() {
                 <p className="text-gray-600 leading-relaxed">{feature.description}</p>
               </div>
             ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Iftar Tickets Banner */}
+      <section className="py-14 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-amber-50 via-orange-50 to-yellow-50">
+        <div className="max-w-4xl mx-auto">
+          <div className="relative bg-gradient-to-r from-green-800 to-green-700 rounded-3xl shadow-2xl overflow-hidden">
+            {/* Decorative elements */}
+            <div className="absolute top-0 right-0 text-9xl opacity-10 leading-none pr-4 pt-1 select-none">🌙</div>
+            <div className="absolute bottom-0 left-0 text-7xl opacity-10 leading-none pl-4 pb-1 select-none">✨</div>
+
+            <div className="relative z-10 flex flex-col md:flex-row items-center justify-between gap-6 p-8 md:p-10">
+              <div className="text-white text-center md:text-left">
+                <div className="inline-flex items-center gap-2 bg-amber-400/20 text-amber-300 text-xs font-bold uppercase tracking-widest px-3 py-1 rounded-full mb-3">
+                  <Ticket className="w-3 h-3" /> Upcoming Event
+                </div>
+                <h2 className="text-3xl md:text-4xl font-extrabold mb-2">MSA Iftar Dinner 🌙</h2>
+                <p className="text-green-100 text-lg font-medium mb-1">Saturday, March 7, 2026</p>
+                <p className="text-green-200 text-sm">Join us for a blessed community evening · Only €5/ticket · Limited to 100 seats</p>
+              </div>
+              <div className="flex-shrink-0">
+                <Link
+                  to="/iftar-tickets"
+                  className="group inline-flex items-center gap-3 bg-amber-400 hover:bg-amber-300 text-green-900 font-extrabold text-lg px-8 py-4 rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-105"
+                >
+                  Get Tickets
+                  <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                </Link>
+              </div>
+            </div>
           </div>
         </div>
       </section>

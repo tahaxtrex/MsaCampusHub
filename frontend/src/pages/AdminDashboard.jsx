@@ -1,28 +1,40 @@
 import { useState, useEffect } from "react";
 import { supabase } from "../lib/supabase";
+import { axiosInstance } from "../lib/axios";
 import { useAuthStore } from "../store/useAuthStore";
-import { Users, Calendar, UserCheck, Plus, Trash2, MapPin, Clock, Edit2, Phone, Mail, User, Search } from "lucide-react";
+import { Users, Calendar, UserCheck, Plus, Trash2, MapPin, Clock, Edit2, Phone, Mail, User, Search, Briefcase, Tag, Ticket } from "lucide-react";
 import toast from "react-hot-toast";
 
 const AdminDashboard = () => {
     const { authUser } = useAuthStore();
-    const [stats, setStats] = useState({ users: 0, events: 0, volunteers: 0 });
+    const [stats, setStats] = useState({ users: 0, events: 0, volunteers: 0, roles: 0 });
     const [events, setEvents] = useState([]);
     const [volunteers, setVolunteers] = useState([]);
     const [loading, setLoading] = useState(true);
     const [showCreateModal, setShowCreateModal] = useState(false);
     const [showEditModal, setShowEditModal] = useState(false);
     const [editingEvent, setEditingEvent] = useState(null);
-    const [activeTab, setActiveTab] = useState('events'); // 'events' or 'volunteers'
+    const [activeTab, setActiveTab] = useState('events'); // 'events', 'volunteers', 'roles', 'tickets'
 
     // New state for user list and event volunteers
     const [showUsersModal, setShowUsersModal] = useState(false);
     const [allUsers, setAllUsers] = useState([]);
+
+    // Iftar tickets state
+    const [iftarTickets, setIftarTickets] = useState([]);
+    const [iftarTicketCount, setIftarTicketCount] = useState(0);
+    const [loadingTickets, setLoadingTickets] = useState(false);
+    const [ticketFilter, setTicketFilter] = useState('all'); // 'all', 'paid', 'unpaid'
     const [showEventVolunteersModal, setShowEventVolunteersModal] = useState(false);
     const [selectedEventVolunteers, setSelectedEventVolunteers] = useState([]);
     const [selectedEventTitle, setSelectedEventTitle] = useState('');
     const [eventVolunteerCounts, setEventVolunteerCounts] = useState({});
     const [eventSearchQuery, setEventSearchQuery] = useState('');
+
+    // Roles state
+    const [roles, setRoles] = useState([]);
+    const [showRoleModal, setShowRoleModal] = useState(false);
+    const [newRole, setNewRole] = useState({ name: '', description: '' });
 
     const [newEvent, setNewEvent] = useState({
         title: "",
@@ -39,6 +51,8 @@ const AdminDashboard = () => {
             fetchStats();
             fetchEvents();
             fetchVolunteers();
+            fetchRoles();
+            fetchIftarTickets();
         }
     }, [authUser]);
 
@@ -47,8 +61,11 @@ const AdminDashboard = () => {
             const { count: userCount } = await supabase.from("profiles").select("*", { count: "exact", head: true });
             const { count: eventCount } = await supabase.from("events").select("*", { count: "exact", head: true });
             const { count: volCount } = await supabase.from("event_volunteers").select("*", { count: "exact", head: true });
+            const { count: roleCount } = await supabase.from("volunteer_roles").select("*", { count: "exact", head: true });
+            const { count: ticketCount } = await supabase.from("iftar_tickets").select("*", { count: "exact", head: true });
 
-            setStats({ users: userCount || 0, events: eventCount || 0, volunteers: volCount || 0 });
+            setStats({ users: userCount || 0, events: eventCount || 0, volunteers: volCount || 0, roles: roleCount || 0 });
+            setIftarTicketCount(ticketCount || 0);
         } catch (error) {
             console.error("Error fetching stats:", error);
         }
@@ -67,6 +84,78 @@ const AdminDashboard = () => {
             console.error("Error fetching events:", error);
         } finally {
             setLoading(false);
+        }
+    };
+
+    const fetchRoles = async () => {
+        try {
+            const { data, error } = await supabase
+                .from("volunteer_roles")
+                .select("*")
+                .order("name", { ascending: true });
+
+            if (error) throw error;
+            setRoles(data || []);
+        } catch (error) {
+            console.error("Error fetching roles:", error);
+        }
+    };
+
+    const fetchIftarTickets = async () => {
+        setLoadingTickets(true);
+        try {
+            const res = await axiosInstance.get("/api/iftar-tickets");
+            setIftarTickets(res.data.tickets || []);
+            setIftarTicketCount(res.data.total || 0);
+        } catch (error) {
+            console.error("Error fetching iftar tickets:", error);
+            toast.error("Failed to load Iftar tickets");
+        } finally {
+            setLoadingTickets(false);
+        }
+    };
+
+    const toggleTicketPaid = async (id, currentPaid) => {
+        try {
+            await axiosInstance.patch(`/api/iftar-tickets/${id}/paid`, { paid: !currentPaid });
+            setIftarTickets(prev =>
+                prev.map(t => t.id === id ? { ...t, paid: !currentPaid } : t)
+            );
+            toast.success(currentPaid ? "Marked as unpaid" : "✅ Marked as paid!");
+        } catch (error) {
+            console.error("Error toggling paid:", error);
+            toast.error("Failed to update payment status");
+        }
+    };
+
+    const handleCreateRole = async (e) => {
+        e.preventDefault();
+        try {
+            const { error } = await supabase.from("volunteer_roles").insert([newRole]);
+            if (error) throw error;
+
+            toast.success("Role created successfully");
+            setShowRoleModal(false);
+            setNewRole({ name: '', description: '' });
+            fetchRoles();
+            fetchStats();
+        } catch (error) {
+            console.error("Error creating role:", error);
+            toast.error("Failed to create role");
+        }
+    };
+
+    const handleDeleteRole = async (id) => {
+        if (!window.confirm("Are you sure? This might affect volunteers assigned to this role.")) return;
+        try {
+            const { error } = await supabase.from("volunteer_roles").delete().eq('id', id);
+            if (error) throw error;
+            toast.success("Role deleted");
+            fetchRoles();
+            fetchStats();
+        } catch (error) {
+            console.error("Error deleting role:", error);
+            toast.error("Failed to delete role");
         }
     };
 
@@ -142,10 +231,8 @@ const AdminDashboard = () => {
             const joinedData = volunteersData
                 .filter(volunteer => eventsMap[volunteer.event_id])
                 .map(volunteer => ({
-                    id: volunteer.id,
+                    ...volunteer,
                     volunteered_at: volunteer.created_at,
-                    event_id: volunteer.event_id,
-                    user_id: volunteer.user_id,
                     events: eventsMap[volunteer.event_id],
                     profiles: profilesMap[volunteer.user_id] || null
                 }));
@@ -274,6 +361,12 @@ const AdminDashboard = () => {
     const handleEditEvent = async (e) => {
         e.preventDefault();
         try {
+            // Ensure date and time are valid before combining
+            if (!editingEvent.date || !editingEvent.time) {
+                toast.error("Date and time are required");
+                return;
+            }
+
             const dateTime = new Date(`${editingEvent.date}T${editingEvent.time}`).toISOString();
 
             const { error } = await supabase
@@ -299,6 +392,24 @@ const AdminDashboard = () => {
             toast.error("Failed to update event");
         }
     };
+
+    const getEventGradient = (type) => {
+        switch (type) {
+            case 'religious':
+                return 'bg-gradient-to-br from-emerald-50 to-teal-50 border-emerald-200 text-emerald-900 shadow-sm hover:shadow-md';
+            case 'social':
+                return 'bg-gradient-to-br from-blue-50 to-indigo-50 border-blue-200 text-blue-900 shadow-sm hover:shadow-md';
+            case 'charity':
+                return 'bg-gradient-to-br from-amber-50 to-orange-50 border-amber-200 text-amber-900 shadow-sm hover:shadow-md';
+            case 'education':
+                return 'bg-gradient-to-br from-violet-50 to-purple-50 border-violet-200 text-violet-900 shadow-sm hover:shadow-md';
+            default:
+                return 'bg-gradient-to-br from-gray-50 to-slate-50 border-gray-200 text-gray-900 shadow-sm hover:shadow-md';
+        }
+    };
+
+    // Glassmorphism classes
+    const glassModal = "bg-white/90 backdrop-blur-xl shadow-2xl border border-white/20";
 
     const openEditModal = (event) => {
         const eventDate = new Date(event.date);
@@ -336,6 +447,43 @@ const AdminDashboard = () => {
         }
     };
 
+    const handleUpdateRole = async (volunteerId, roleId) => {
+        try {
+            const { error } = await supabase
+                .from("event_volunteers")
+                .update({ role_id: roleId })
+                .eq("id", volunteerId);
+
+            if (error) throw error;
+
+            toast.success("Volunteer role updated");
+
+            // Update local state to reflect change without refetching
+            setSelectedEventVolunteers(prev =>
+                prev.map(v => v.id === volunteerId ? { ...v, role_id: roleId } : v)
+            );
+        } catch (error) {
+            console.error("Error updating role:", error);
+            toast.error("Failed to update role");
+        }
+    };
+
+    // Update global volunteers state as well to keep UI in sync
+    useEffect(() => {
+        if (selectedEventVolunteers.length > 0) {
+            setVolunteers(prev => {
+                const updated = [...prev];
+                selectedEventVolunteers.forEach(sv => {
+                    const index = updated.findIndex(v => v.id === sv.id);
+                    if (index !== -1 && updated[index].role_id !== sv.role_id) {
+                        updated[index] = { ...updated[index], role_id: sv.role_id };
+                    }
+                });
+                return updated;
+            });
+        }
+    }, [selectedEventVolunteers]);
+
     if (!authUser?.is_admin) {
         return (
             <div className="min-h-screen flex items-center justify-center bg-gray-50">
@@ -362,7 +510,7 @@ const AdminDashboard = () => {
                 </div>
 
                 {/* Stats Cards */}
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
                     <div
                         onClick={fetchAllUsers}
                         className="bg-white p-6 rounded-xl shadow-sm border border-gray-100 flex items-center gap-4 hover:shadow-md transition-shadow cursor-pointer"
@@ -396,6 +544,30 @@ const AdminDashboard = () => {
                             <p className="text-2xl font-bold text-gray-900">{stats.volunteers}</p>
                         </div>
                     </div>
+
+                    <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100 flex items-center gap-4">
+                        <div className="p-3 bg-orange-100 text-orange-600 rounded-lg">
+                            <Briefcase size={24} />
+                        </div>
+                        <div>
+                            <p className="text-sm text-gray-500">Total Roles</p>
+                            <p className="text-2xl font-bold text-gray-900">{stats.roles}</p>
+                        </div>
+                    </div>
+
+                    <div
+                        onClick={() => setActiveTab('tickets')}
+                        className="bg-gradient-to-br from-amber-50 to-yellow-50 p-6 rounded-xl shadow-sm border border-amber-200 flex items-center gap-4 cursor-pointer hover:shadow-md transition-shadow"
+                    >
+                        <div className="p-3 bg-amber-100 text-amber-700 rounded-lg">
+                            <Ticket size={24} />
+                        </div>
+                        <div>
+                            <p className="text-sm text-amber-700 font-medium">Iftar Tickets 🌙</p>
+                            <p className="text-2xl font-bold text-gray-900">{iftarTicketCount} <span className="text-sm font-normal text-gray-400">/ 100</span></p>
+                            <p className="text-xs text-amber-600 mt-1">Click to manage</p>
+                        </div>
+                    </div>
                 </div>
 
                 {/* Tabs - Scrollable on mobile */}
@@ -417,6 +589,24 @@ const AdminDashboard = () => {
                             }`}
                     >
                         Volunteer Requests
+                    </button>
+                    <button
+                        onClick={() => setActiveTab('roles')}
+                        className={`px-3 sm:px-4 py-2 rounded-lg font-medium whitespace-nowrap text-sm sm:text-base ${activeTab === 'roles'
+                            ? 'bg-blue-600 text-white'
+                            : 'bg-white text-gray-600 hover:bg-gray-100'
+                            }`}
+                    >
+                        Roles Management
+                    </button>
+                    <button
+                        onClick={() => { setActiveTab('tickets'); fetchIftarTickets(); }}
+                        className={`px-3 sm:px-4 py-2 rounded-lg font-medium whitespace-nowrap text-sm sm:text-base flex items-center gap-1.5 ${activeTab === 'tickets'
+                            ? 'bg-amber-600 text-white'
+                            : 'bg-amber-50 text-amber-700 border border-amber-200 hover:bg-amber-100'
+                            }`}
+                    >
+                        <Ticket size={16} /> 🌙 Iftar Tickets
                     </button>
                 </div>
 
@@ -450,12 +640,12 @@ const AdminDashboard = () => {
                                             event.type.toLowerCase().includes(query);
                                     })
                                     .map((event) => (
-                                        <div key={event.id} className="p-4 sm:p-6 hover:bg-gray-50">
+                                        <div key={event.id} className={`p-4 sm:p-6 mb-4 rounded-xl border transition-all duration-200 ${getEventGradient(event.type)}`}>
                                             {/* Stack on mobile, side-by-side on larger screens */}
                                             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4">
                                                 <div className="flex-1">
-                                                    <h3 className="font-semibold text-gray-900 mb-2">{event.title}</h3>
-                                                    <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 text-sm text-gray-500">
+                                                    <h3 className="font-bold text-lg mb-2">{event.title}</h3>
+                                                    <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 text-sm opacity-80">
                                                         <span className="flex items-center gap-1">
                                                             <Calendar size={14} />
                                                             {new Date(event.date).toLocaleDateString()}
@@ -474,14 +664,14 @@ const AdminDashboard = () => {
                                                 <div className="flex items-center gap-3 sm:gap-4 flex-wrap sm:flex-nowrap">
                                                     <button
                                                         onClick={() => fetchEventVolunteers(event.id, event.title)}
-                                                        className="text-xs sm:text-sm text-blue-600 hover:text-blue-800 flex items-center gap-1"
+                                                        className="text-xs sm:text-sm font-medium bg-white/50 hover:bg-white/80 px-3 py-1.5 rounded-lg transition-colors flex items-center gap-1"
                                                     >
                                                         <UserCheck size={16} />
                                                         {eventVolunteerCounts[event.id] || 0} Volunteers
                                                     </button>
                                                     <button
                                                         onClick={() => openEditModal(event)}
-                                                        className="p-2 text-gray-600 hover:text-blue-600 hover:bg-blue-50 rounded"
+                                                        className="p-2 bg-white/50 hover:bg-white/80 rounded-lg transition-colors"
                                                         aria-label="Edit event"
                                                     >
                                                         <Edit2 size={18} />
@@ -502,6 +692,63 @@ const AdminDashboard = () => {
                     </div>
                 )}
 
+                {/* Roles Management */}
+                {activeTab === 'roles' && (
+                    <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+                        <div className="px-6 py-4 border-b border-gray-100 flex justify-between items-center">
+                            <h2 className="text-lg font-semibold text-gray-900">Manage Roles</h2>
+                            <button
+                                onClick={() => setShowRoleModal(true)}
+                                className="btn btn-sm btn-primary flex items-center gap-2"
+                            >
+                                <Plus size={16} /> Add Role
+                            </button>
+                        </div>
+
+                        <div className="overflow-x-auto">
+                            <table className="w-full">
+                                <thead className="bg-gray-50 border-b border-gray-100">
+                                    <tr>
+                                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Role Name</th>
+                                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Description</th>
+                                        <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody className="divide-y divide-gray-100">
+                                    {roles.map((role) => (
+                                        <tr key={role.id} className="hover:bg-gray-50">
+                                            <td className="px-6 py-4 whitespace-nowrap">
+                                                <div className="flex items-center gap-2">
+                                                    <Tag size={16} className="text-gray-400" />
+                                                    <span className="font-medium text-gray-900">{role.name}</span>
+                                                </div>
+                                            </td>
+                                            <td className="px-6 py-4">
+                                                <span className="text-sm text-gray-600 truncate block max-w-xs">{role.description || '-'}</span>
+                                            </td>
+                                            <td className="px-6 py-4 text-right">
+                                                <button
+                                                    onClick={() => handleDeleteRole(role.id)}
+                                                    className="text-red-600 hover:text-red-800 p-1 rounded hover:bg-red-50"
+                                                >
+                                                    <Trash2 size={16} />
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    ))}
+                                    {roles.length === 0 && (
+                                        <tr>
+                                            <td colSpan="3" className="px-6 py-8 text-center text-gray-500">
+                                                No roles defined. Create one to get started.
+                                            </td>
+                                        </tr>
+                                    )}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                )}
+
                 {/* Volunteer Requests */}
                 {activeTab === 'volunteers' && (
                     <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
@@ -515,6 +762,7 @@ const AdminDashboard = () => {
                                     <tr>
                                         <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Volunteer</th>
                                         <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Event</th>
+                                        <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Role</th>
                                         <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Contact</th>
                                         <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Registered</th>
                                     </tr>
@@ -535,6 +783,12 @@ const AdminDashboard = () => {
                                                 <div className="text-xs text-gray-500">
                                                     {new Date(vol.events?.date).toLocaleDateString()}
                                                 </div>
+                                            </td>
+                                            <td className="px-3 sm:px-6 py-4">
+                                                <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${vol.role_id ? 'bg-blue-100 text-blue-800' : 'bg-gray-100 text-gray-800'
+                                                    }`}>
+                                                    {roles.find(r => r.id === vol.role_id)?.name || 'None'}
+                                                </span>
                                             </td>
                                             <td className="px-3 sm:px-6 py-4">
                                                 <div className="flex flex-col gap-1">
@@ -567,12 +821,127 @@ const AdminDashboard = () => {
                         </div>
                     </div>
                 )}
+
+                {/* Iftar Tickets Tab */}
+                {activeTab === 'tickets' && (
+                    <div className="bg-white rounded-xl shadow-sm border border-amber-100 overflow-hidden">
+                        <div className="px-6 py-4 border-b border-amber-100 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                            <div>
+                                <h2 className="text-lg font-semibold text-gray-900">🌙 Iftar Dinner Tickets — March 7, 2026</h2>
+                                <p className="text-sm text-gray-500 mt-0.5">
+                                    {iftarTickets.filter(t => t.paid).length} confirmed paid &bull; {iftarTicketCount} / 100 registered
+                                </p>
+                            </div>
+                            <div className="flex gap-2">
+                                {['all', 'paid', 'unpaid'].map(f => (
+                                    <button
+                                        key={f}
+                                        onClick={() => setTicketFilter(f)}
+                                        className={`px-3 py-1.5 rounded-lg text-sm font-medium capitalize transition ${ticketFilter === f
+                                            ? 'bg-amber-600 text-white'
+                                            : 'bg-amber-50 text-amber-700 hover:bg-amber-100 border border-amber-200'
+                                            }`}
+                                    >
+                                        {f === 'all' ? `All (${iftarTicketCount})` : f === 'paid' ? `✅ Paid (${iftarTickets.filter(t => t.paid).length})` : `⏳ Unpaid (${iftarTickets.filter(t => !t.paid).length})`}
+                                    </button>
+                                ))}
+                            </div>
+                        </div>
+
+                        <div className="overflow-x-auto">
+                            {loadingTickets ? (
+                                <div className="p-8 text-center text-gray-500">Loading tickets...</div>
+                            ) : (
+                                <table className="w-full">
+                                    <thead className="bg-amber-50 border-b border-amber-100">
+                                        <tr>
+                                            <th className="px-4 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
+                                            <th className="px-4 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Email</th>
+                                            <th className="px-4 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider hidden sm:table-cell">Phone</th>
+                                            <th className="px-4 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Method</th>
+                                            <th className="px-4 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider hidden sm:table-cell">Registered</th>
+                                            <th className="px-4 sm:px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Paid ✓</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody className="divide-y divide-gray-100">
+                                        {iftarTickets
+                                            .filter(t => ticketFilter === 'all' || (ticketFilter === 'paid' ? t.paid : !t.paid))
+                                            .map(ticket => (
+                                                <tr key={ticket.id} className={`hover:bg-gray-50 transition-colors ${ticket.paid ? 'bg-green-50/30' : ''}`}>
+                                                    <td className="px-4 sm:px-6 py-4">
+                                                        <div className="flex items-center gap-2">
+                                                            <User size={16} className="text-gray-400 flex-shrink-0" />
+                                                            <span className="font-medium text-gray-900 text-sm">{ticket.full_name}</span>
+                                                        </div>
+                                                    </td>
+                                                    <td className="px-4 sm:px-6 py-4">
+                                                        <div className="flex items-center gap-2 text-sm text-gray-700">
+                                                            <Mail size={14} className="text-gray-400 flex-shrink-0" />
+                                                            <span className="truncate max-w-[140px] sm:max-w-none">{ticket.email}</span>
+                                                        </div>
+                                                    </td>
+                                                    <td className="px-4 sm:px-6 py-4 hidden sm:table-cell">
+                                                        {ticket.phone ? (
+                                                            <div className="flex items-center gap-2 text-sm text-gray-700">
+                                                                <Phone size={14} className="text-gray-400 flex-shrink-0" />
+                                                                {ticket.phone}
+                                                            </div>
+                                                        ) : (
+                                                            <span className="text-gray-300 text-sm">—</span>
+                                                        )}
+                                                    </td>
+                                                    <td className="px-4 sm:px-6 py-4">
+                                                        <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold ${ticket.payment_method === 'paypal' ? 'bg-blue-100 text-blue-800' :
+                                                            ticket.payment_method === 'revolut' ? 'bg-gray-100 text-gray-800' :
+                                                                'bg-indigo-100 text-indigo-800'
+                                                            }`}>
+                                                            {ticket.payment_method === 'paypal' ? '💙 PayPal' :
+                                                                ticket.payment_method === 'revolut' ? '⚫ Revolut' :
+                                                                    '🏦 Bank'}
+                                                        </span>
+                                                    </td>
+                                                    <td className="px-4 sm:px-6 py-4 text-sm text-gray-500 hidden sm:table-cell whitespace-nowrap">
+                                                        {new Date(ticket.created_at).toLocaleDateString()}
+                                                    </td>
+                                                    <td className="px-4 sm:px-6 py-4 text-center">
+                                                        <button
+                                                            onClick={() => toggleTicketPaid(ticket.id, ticket.paid)}
+                                                            title={ticket.paid ? 'Click to mark unpaid' : 'Click to mark paid'}
+                                                            className={`w-7 h-7 rounded-full border-2 flex items-center justify-center mx-auto transition-all ${ticket.paid
+                                                                ? 'bg-green-500 border-green-500 text-white hover:bg-green-600'
+                                                                : 'border-gray-300 hover:border-green-400 hover:bg-green-50'
+                                                                }`}
+                                                        >
+                                                            {ticket.paid && (
+                                                                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
+                                                                    <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                                                                </svg>
+                                                            )}
+                                                        </button>
+                                                    </td>
+                                                </tr>
+                                            ))}
+                                        {iftarTickets.filter(t => ticketFilter === 'all' || (ticketFilter === 'paid' ? t.paid : !t.paid)).length === 0 && (
+                                            <tr>
+                                                <td colSpan="6" className="px-6 py-10 text-center text-gray-400">
+                                                    {iftarTicketCount === 0
+                                                        ? 'No tickets registered yet. Share the link!'
+                                                        : `No ${ticketFilter} tickets found.`}
+                                                </td>
+                                            </tr>
+                                        )}
+                                    </tbody>
+                                </table>
+                            )}
+                        </div>
+                    </div>
+                )}
             </div>
 
             {/* Create Event Modal */}
             {showCreateModal && (
-                <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4 overflow-y-auto">
-                    <div className="bg-white rounded-2xl w-full max-w-md p-4 sm:p-6 shadow-2xl my-8">
+                <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4 overflow-y-auto">
+                    <div className={`${glassModal} rounded-2xl w-full max-w-md p-4 sm:p-6 my-8`}>
                         <h2 className="text-lg sm:text-xl font-bold mb-4">Create New Event</h2>
                         <form onSubmit={handleCreateEvent} className="space-y-4">
                             <div>
@@ -672,10 +1041,53 @@ const AdminDashboard = () => {
                 </div>
             )}
 
+            {/* Create Role Modal */}
+            {showRoleModal && (
+                <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+                    <div className="bg-white rounded-2xl w-full max-w-md p-6 shadow-2xl">
+                        <h2 className="text-xl font-bold mb-4">Create New Role</h2>
+                        <form onSubmit={handleCreateRole} className="space-y-4">
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-1">Role Name</label>
+                                <input
+                                    type="text"
+                                    required
+                                    className="input input-bordered w-full"
+                                    value={newRole.name}
+                                    onChange={e => setNewRole({ ...newRole, name: e.target.value })}
+                                    placeholder="e.g., Organizer"
+                                />
+                            </div>
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
+                                <textarea
+                                    className="textarea textarea-bordered w-full"
+                                    value={newRole.description}
+                                    onChange={e => setNewRole({ ...newRole, description: e.target.value })}
+                                    placeholder="Optional description..."
+                                ></textarea>
+                            </div>
+                            <div className="flex justify-end gap-3 mt-6">
+                                <button
+                                    type="button"
+                                    onClick={() => setShowRoleModal(false)}
+                                    className="btn btn-ghost"
+                                >
+                                    Cancel
+                                </button>
+                                <button type="submit" className="btn btn-primary">
+                                    Create Role
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            )}
+
             {/* Edit Event Modal */}
             {showEditModal && editingEvent && (
-                <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4 overflow-y-auto">
-                    <div className="bg-white rounded-2xl w-full max-w-md p-4 sm:p-6 shadow-2xl my-8">
+                <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4 overflow-y-auto">
+                    <div className={`${glassModal} rounded-2xl w-full max-w-md p-6 my-8`}>
                         <h2 className="text-lg sm:text-xl font-bold mb-4">Edit Event</h2>
                         <form onSubmit={handleEditEvent} className="space-y-4">
                             <div>
@@ -780,8 +1192,8 @@ const AdminDashboard = () => {
 
             {/* Users List Modal */}
             {showUsersModal && (
-                <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-                    <div className="bg-white rounded-2xl w-full max-w-4xl p-4 sm:p-6 shadow-2xl max-h-[85vh] overflow-y-auto">
+                <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+                    <div className={`${glassModal} rounded-2xl w-full max-w-4xl p-6 max-h-[90vh] overflow-y-auto`}>
                         <div className="flex justify-between items-center mb-4">
                             <h2 className="text-xl font-bold">All Users ({allUsers.length})</h2>
                             <button
@@ -843,6 +1255,7 @@ const AdminDashboard = () => {
                                             <th className="px-2 sm:px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Email</th>
                                             <th className="px-2 sm:px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase hidden sm:table-cell">Phone</th>
                                             <th className="px-2 sm:px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase hidden sm:table-cell">Registered</th>
+                                            <th className="px-2 sm:px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Role</th>
                                         </tr>
                                     </thead>
                                     <tbody className="divide-y divide-gray-100">
@@ -855,6 +1268,18 @@ const AdminDashboard = () => {
                                                 <td className="px-2 sm:px-4 py-3 text-sm text-gray-600 hidden sm:table-cell">{vol.profile?.phone_number || 'N/A'}</td>
                                                 <td className="px-2 sm:px-4 py-3 text-sm text-gray-600 hidden sm:table-cell">
                                                     {new Date(vol.created_at).toLocaleDateString()}
+                                                </td>
+                                                <td className="px-2 sm:px-4 py-3 text-sm text-gray-900">
+                                                    <select
+                                                        value={vol.role_id || ''}
+                                                        onChange={(e) => handleUpdateRole(vol.id, e.target.value)}
+                                                        className="select select-bordered select-xs w-full max-w-xs focus:ring-blue-500 focus:border-blue-500"
+                                                    >
+                                                        <option value="">None</option>
+                                                        {roles.map(role => (
+                                                            <option key={role.id} value={role.id}>{role.name}</option>
+                                                        ))}
+                                                    </select>
                                                 </td>
                                             </tr>
                                         ))}
