@@ -22,7 +22,7 @@ app.use(cors({
     "http://localhost:5174",              // local dev (alternative port)
     "https://msacampushub.vercel.app"     // deployed frontend
   ],
-  methods: ["GET", "POST", "PUT", "DELETE"],
+  methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
   credentials: true
 }));
 

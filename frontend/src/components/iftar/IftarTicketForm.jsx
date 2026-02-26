@@ -166,7 +166,7 @@ export default function IftarTicketForm() {
                         Complete your <strong>€{TICKET_PRICE}</strong> payment using the tab that opened.
                     </p>
                     <p className="text-gray-500 text-sm mt-2">
-                        An admin will confirm your ticket once your payment is verified. See you at Iftar!
+                        You will get an email after your request has been approved. See you at Iftar!
                     </p>
                 </div>
                 <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 text-left">
@@ -212,10 +212,10 @@ export default function IftarTicketForm() {
                     <div className="w-full bg-amber-200 rounded-full h-2.5">
                         <div
                             className={`h-2.5 rounded-full transition-all duration-700 ${capacity.sold_out
-                                    ? "bg-red-500"
-                                    : capacity.remaining <= 20
-                                        ? "bg-orange-500"
-                                        : "bg-green-500"
+                                ? "bg-red-500"
+                                : capacity.remaining <= 20
+                                    ? "bg-orange-500"
+                                    : "bg-green-500"
                                 }`}
                             style={{ width: `${Math.min((capacity.sold / MAX_CAPACITY) * 100, 100)}%` }}
                         />
@@ -258,8 +258,8 @@ export default function IftarTicketForm() {
                         placeholder="your@email.com"
                         value={form.email}
                         onChange={(e) => setForm({ ...form, email: e.target.value })}
-                        className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-400 focus:border-transparent text-gray-800 transition"
-                        disabled={isLoading || capacity.sold_out}
+                        className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-400 focus:border-transparent text-gray-800 transition disabled:opacity-70 disabled:bg-gray-100"
+                        disabled={isLoading || capacity.sold_out || !!authUser?.email}
                     />
                 </div>
 
@@ -276,8 +276,8 @@ export default function IftarTicketForm() {
                         placeholder="+49 123 456 789"
                         value={form.phone}
                         onChange={(e) => setForm({ ...form, phone: e.target.value })}
-                        className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-400 focus:border-transparent text-gray-800 transition"
-                        disabled={isLoading || capacity.sold_out}
+                        className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-400 focus:border-transparent text-gray-800 transition disabled:opacity-70 disabled:bg-gray-100"
+                        disabled={isLoading || capacity.sold_out || !!authUser?.phone_number}
                     />
                 </div>
             </div>
